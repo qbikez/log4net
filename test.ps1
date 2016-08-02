@@ -35,11 +35,19 @@ foreach ($t in $tests) {
 			write-error "failed to build test project '$file'"
 			continue
         }
+    } finally {
+        popd
+    }
+
+    pushd 
         
+    try {
         $bin = $t.bin
         if ($bin -eq $null) {
             $bin = "bin\Debug\$($file -replace ".csproj",".dll")"
         }
+
+    
         if ($testcmd -eq "mstest") {
             $p =  @("/testcontainer:""$bin""")
             $p += @("/resultsfile:..\.results\$(split-path -leaf $dir).xml")
@@ -53,7 +61,7 @@ foreach ($t in $tests) {
              if ($test -ne $null) {
                 $p += "/tests:""$test"""
             }
-            $testadapterpath=split-path -parent $bin
+            $testadapterpath="tests\bin\Debug" #split-path -parent $bin
             $p += @("/testAdapterPath:$testadapterpath")
             if ($t.testsettings -ne $null) {
                 $p += "/settings:$reporoot\$($t.testsettings)"

@@ -115,7 +115,8 @@ namespace log4net.Repository.Hierarchy
 			LoggerKey objKey = obj as LoggerKey;
 			if (objKey != null) 
 			{
-#if NETCF
+#if NETCF || COREFX
+                // string are not interned - compare string
 				return ( m_name == objKey.m_name );
 #else
 				// Compare reference types rather than string's overloaded ==

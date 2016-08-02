@@ -22,105 +22,112 @@ using System.Reflection;
 
 namespace log4net.Tests
 {
-	/// <summary>
-	/// Summary description for Class1.
-	/// </summary>
-	public class Utils
-	{
-		private Utils()
-		{
-		}
+    /// <summary>
+    /// Summary description for Class1.
+    /// </summary>
+    public class Utils
+    {
+        private Utils()
+        {
+        }
 
-		public static object CreateInstance(string targetType)
-		{
-			return CreateInstance(Type.GetType(targetType, true, true));
-		}
+        public static object CreateInstance(string targetType)
+        {
+            return CreateInstance(Type.GetType(targetType, true, true));
+        }
 
-		public static object CreateInstance(Type targetType)
-		{
+        public static object CreateInstance(Type targetType)
+        {
 #if !COREFX
             return targetType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null).Invoke(null);
 #else
-            return targetType.GetConstructor(new Type[0]).Invoke(null);
+            var ctor = targetType.GetConstructor(new Type[0]);
+            return ctor.Invoke(null);
 #endif
         }
 
         public static object InvokeMethod(object target, string name, params object[] args)
-		{
+        {
 #if !COREFX
             return target.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, null, GetTypesArray(args), null).Invoke(target, args);
 #else
-            return target.GetType().GetMethod(name, GetTypesArray(args)).Invoke(target, args);
+            var m = target.GetType().GetMethod(name, GetTypesArray(args));
+            if (m == null) m = target.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+            return m.Invoke(target, args);
 #endif
         }
 
-		public static object InvokeMethod(Type target, string name, params object[] args)
-		{
+        public static object InvokeMethod(Type target, string name, params object[] args)
+        {
 #if !COREFX
             return target.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, GetTypesArray(args), null).Invoke(null, args);
 #else
-            return target.GetMethod(name,GetTypesArray(args)).Invoke(null, args);
+            var m = target.GetMethod(name, GetTypesArray(args));
+            if (m == null) m = target.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+            return m.Invoke(null, args);
 
 #endif
         }
 
         public static object GetField(object target, string name)
-		{
-			return target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target);
-		}
+        {
+            var f = target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target);
+            return f;
+        }
 
-		public static void SetField(object target, string name, object val)
-		{
-			target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val);
-		}
+        public static void SetField(object target, string name, object val)
+        {
+            target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val);
+        }
 
-		public static object GetProperty(object target, string name)
-		{
-			return target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target, null);
-		}
+        public static object GetProperty(object target, string name)
+        {
+            return target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target, null);
+        }
 
-		public static void SetProperty(object target, string name, object val)
-		{
-			target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val, null);
-		}
+        public static void SetProperty(object target, string name, object val)
+        {
+            target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val, null);
+        }
 
-		public static object GetProperty(object target, string name, params object[] index)
-		{
-			return target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target, index);
-		}
+        public static object GetProperty(object target, string name, params object[] index)
+        {
+            return target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target, index);
+        }
 
-		public static void SetProperty(object target, string name, object val, params object[] index)
-		{
-			target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val, index);
-		}
+        public static void SetProperty(object target, string name, object val, params object[] index)
+        {
+            target.GetType().GetProperty(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).SetValue(target, val, index);
+        }
 
-		private static Type[] GetTypesArray(object[] args)
-		{
-			Type[] types = new Type[args.Length];
+        private static Type[] GetTypesArray(object[] args)
+        {
+            Type[] types = new Type[args.Length];
 
-			for(int i = 0; i < args.Length; i++)
-			{
-				if (args[i] == null)
-				{
-					types[i] = typeof(object);
-				}
-				else
-				{
-					types[i] = args[i].GetType();
-				}
-			}
+            for (int i = 0; i < args.Length; i++)
+            {
+                if (args[i] == null)
+                {
+                    types[i] = typeof(object);
+                }
+                else
+                {
+                    types[i] = args[i].GetType();
+                }
+            }
 
-			return types;
-		}
+            return types;
+        }
 
         internal const string PROPERTY_KEY = "prop1";
 
-        internal static void RemovePropertyFromAllContexts() {
+        internal static void RemovePropertyFromAllContexts()
+        {
             GlobalContext.Properties.Remove(PROPERTY_KEY);
             ThreadContext.Properties.Remove(PROPERTY_KEY);
 #if !COREFX
             LogicalThreadContext.Properties.Remove(PROPERTY_KEY);
 #endif
         }
-	}
+    }
 }

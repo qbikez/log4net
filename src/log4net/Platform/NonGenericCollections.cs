@@ -60,6 +60,19 @@ namespace System.Collections
             }
             return h;
         }
+
+        public new object this[object key]
+        {
+            get
+            {
+                if (!this.ContainsKey(key)) return null;
+                return base[key];
+            }
+            set
+            {
+                base[key] = value;
+            }
+        }
     }
 
     public class CaseInsensitiveHashtable : Hashtable

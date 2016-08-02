@@ -28,6 +28,11 @@ using System.Xml;
 
 namespace log4net.Util
 {
+#if COREFX
+    using Entry = System.Collections.Generic.KeyValuePair<object, object>;
+#else
+    using Entry = DictionaryEntry;
+#endif
     /// <summary>
     /// String keyed object map that is read only.
     /// </summary>
@@ -49,16 +54,16 @@ namespace log4net.Util
 	[Serializable] public class ReadOnlyPropertiesDictionary : ISerializable, IDictionary
 #endif
     {
-        #region Private Instance Fields
+#region Private Instance Fields
 
         /// <summary>
         /// The Hashtable used to store the properties data
         /// </summary>
         private readonly Hashtable m_hashtable = new Hashtable();
 
-        #endregion Private Instance Fields
+#endregion Private Instance Fields
 
-        #region Public Instance Constructors
+#region Public Instance Constructors
 
         /// <summary>
         /// Constructor
@@ -83,15 +88,15 @@ namespace log4net.Util
         /// </remarks>
         public ReadOnlyPropertiesDictionary(ReadOnlyPropertiesDictionary propertiesDictionary)
         {
-            foreach (DictionaryEntry entry in propertiesDictionary)
+            foreach (Entry entry in propertiesDictionary)
             {
                 InnerHashtable.Add(entry.Key, entry.Value);
             }
         }
 
-        #endregion Public Instance Constructors
+#endregion Public Instance Constructors
 
-        #region Private Instance Constructors
+#region Private Instance Constructors
 
 #if !NETCF && !NOXML
 		/// <summary>
@@ -115,9 +120,9 @@ namespace log4net.Util
 		}
 #endif
 
-        #endregion Protected Instance Constructors
+#endregion Protected Instance Constructors
 
-        #region Public Instance Properties
+#region Public Instance Properties
 
         /// <summary>
         /// Gets the key names.
@@ -155,9 +160,9 @@ namespace log4net.Util
             set { throw new NotSupportedException("This is a Read Only Dictionary and can not be modified"); }
         }
 
-        #endregion Public Instance Properties
+#endregion Public Instance Properties
 
-        #region Public Instance Methods
+#region Public Instance Methods
 
         /// <summary>
         /// Test if the dictionary contains a specified key
@@ -174,7 +179,7 @@ namespace log4net.Util
             return InnerHashtable.Contains(key);
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// The hashtable used to store the properties
@@ -192,7 +197,7 @@ namespace log4net.Util
             get { return m_hashtable; }
         }
 
-        #region Implementation of ISerializable
+#region Implementation of ISerializable
 
 #if !NETCF && !NOXML
 		/// <summary>
@@ -230,9 +235,9 @@ namespace log4net.Util
 		}
 #endif
 
-        #endregion Implementation of ISerializable
+#endregion Implementation of ISerializable
 
-        #region Implementation of IDictionary
+#region Implementation of IDictionary
 
         /// <summary>
         /// See <see cref="IDictionary.GetEnumerator"/>
@@ -327,9 +332,9 @@ namespace log4net.Util
 			get { return InnerHashtable.IsFixedSize; }
 		}
         
-        #endregion
+#endregion
 
-        #region Implementation of ICollection
+#region Implementation of ICollection
 
         /// <summary>
         /// See <see cref="ICollection.CopyTo"/>
@@ -365,9 +370,9 @@ namespace log4net.Util
 			get { return InnerHashtable.GetSyncRoot(); }
 		}
 
-        #endregion
+#endregion
 
-        #region Implementation of IEnumerable
+#region Implementation of IEnumerable
 
         /// <summary>
         /// See <see cref="IEnumerable.GetEnumerator"/>
@@ -377,7 +382,7 @@ namespace log4net.Util
             return ((IEnumerable)InnerHashtable).GetEnumerator();
         }
 
-        #endregion
+#endregion
     }
 }
 

@@ -17,10 +17,10 @@
 //
 #endregion
 
-#if (!NETCF)
+#if (!NETCF && !COREFX)
 #define HAS_READERWRITERLOCK
 #endif
-#if NET_4_0 || MONO_4_0
+#if NET_4_0 || MONO_4_0 || COREFX
 #define HAS_READERWRITERLOCKSLIM
 #endif
 

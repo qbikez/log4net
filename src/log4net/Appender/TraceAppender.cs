@@ -143,12 +143,13 @@ namespace log4net.Appender
 		/// </remarks>
 		override protected void Append(LoggingEvent loggingEvent) 
 		{
-			//
-			// Write the string to the Trace system
-			//
-#if NETCF
-			System.Diagnostics.Debug.Write(RenderLoggingEvent(loggingEvent), m_category.Format(loggingEvent));
+            //
+            // Write the string to the Trace system
+            //
+#if NETCF || COREFX
+            System.Diagnostics.Debug.Write(RenderLoggingEvent(loggingEvent), m_category.Format(loggingEvent));
 #else
+            
             System.Diagnostics.Trace.Write(RenderLoggingEvent(loggingEvent), m_category.Format(loggingEvent));
 #endif
 	 
@@ -157,7 +158,7 @@ namespace log4net.Appender
 			//
 			if (m_immediateFlush) 
 			{
-#if NETCF
+#if NETCF || COREFX
 #if !COREFX
                 System.Diagnostics.Debug.Flush();
 #endif

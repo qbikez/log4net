@@ -867,8 +867,12 @@ namespace log4net.Appender
 			{
 				if (m_mutex != null)
 				{
-					m_mutex.Close();
-					m_mutex = null;
+#if COREFX
+                    m_mutex.Dispose();
+#else
+                    m_mutex.Close();
+#endif
+                    m_mutex = null;
 				}
 				else
 				{
@@ -880,17 +884,17 @@ namespace log4net.Appender
 
 #endregion Locking Models
 
-#region Public Instance Constructors
+                    #region Public Instance Constructors
 
-		/// <summary>
-		/// Default constructor
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// Default constructor
-		/// </para>
-		/// </remarks>
-		public FileAppender()
+                    /// <summary>
+                    /// Default constructor
+                    /// </summary>
+                    /// <remarks>
+                    /// <para>
+                    /// Default constructor
+                    /// </para>
+                    /// </remarks>
+            public FileAppender()
 		{
 		}
 

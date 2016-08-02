@@ -22,6 +22,7 @@ using System.Text;
 using System.IO;
 
 using log4net.Util;
+using System.Diagnostics;
 
 namespace log4net.Util.PatternStringConverters
 {
@@ -55,7 +56,7 @@ namespace log4net.Util.PatternStringConverters
 			// On compact framework there is no System.Diagnostics.Process class
 			writer.Write( SystemInfo.NotAvailableText );
 #else
-			try
+            try
 			{
 				writer.Write( System.Diagnostics.Process.GetCurrentProcess().Id );
 			}

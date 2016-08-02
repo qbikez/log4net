@@ -88,7 +88,7 @@ namespace log4net.Util.TypeConverters
 
 		#region Protected Instance Constructors
 
-#if !NETCF
+#if !NETCF && !COREFX
 		/// <summary>
 		/// Serialization constructor
 		/// </summary>

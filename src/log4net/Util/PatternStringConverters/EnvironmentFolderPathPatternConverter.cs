@@ -17,7 +17,7 @@
 //
 #endregion
 
-#if !NETCF
+#if !NETCF && !COREFX
 
 using System;
 using System.IO;

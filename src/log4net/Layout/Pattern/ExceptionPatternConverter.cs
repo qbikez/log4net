@@ -99,7 +99,7 @@ namespace log4net.Layout.Pattern
 					case "message":
 						WriteObject(writer, loggingEvent.Repository, loggingEvent.ExceptionObject.Message);
 						break;
-#if !NETCF						
+#if !NETCF	&& !COREFX					
 					case "source":
 						WriteObject(writer, loggingEvent.Repository, loggingEvent.ExceptionObject.Source);
 						break;

@@ -141,10 +141,12 @@ namespace log4net.Util
 		{
 			get 
 			{
-#if NETCF
+#if COREFX
+                return Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath;
+#elif NETCF
 				return System.IO.Path.GetDirectoryName(SystemInfo.EntryAssemblyLocation) + System.IO.Path.DirectorySeparatorChar;
 #else
-				return AppDomain.CurrentDomain.BaseDirectory;
+                return AppDomain.CurrentDomain.BaseDirectory;
 #endif
 			}
 		}
@@ -167,10 +169,10 @@ namespace log4net.Util
 		{
 			get 
 			{
-#if NETCF
+#if NETCF || COREFX
 				return SystemInfo.EntryAssemblyLocation+".config";
 #else
-				return System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
+                return System.AppDomain.CurrentDomain.SetupInformation.ConfigurationFile;
 #endif
 			}
 		}
@@ -332,7 +334,7 @@ namespace log4net.Util
 				{
 					try
 					{
-#if !NETCF
+#if !NETCF && !COREFX
 						s_appFriendlyName = AppDomain.CurrentDomain.FriendlyName;
 #endif
 					}
@@ -447,7 +449,7 @@ namespace log4net.Util
 		/// </remarks>
 		public static string AssemblyLocationInfo(Assembly myAssembly)
 		{
-#if NETCF
+#if NETCF || COREFX
 			return "Not supported on Microsoft .NET Compact Framework";
 #else
 			if (myAssembly.GlobalAssemblyCache)
@@ -669,7 +671,7 @@ namespace log4net.Util
 			if(typeName.IndexOf(',') == -1)
 			{
 				//LogLog.Debug(declaringType, "SystemInfo: Loading type ["+typeName+"] from assembly ["+relativeAssembly.FullName+"]");
-#if NETCF
+#if NETCF || COREFX
 				return relativeAssembly.GetType(typeName, throwOnError);
 #else
 				// Attempt to lookup the type from the relativeAssembly
@@ -949,7 +951,7 @@ namespace log4net.Util
 		{
 			try
 			{
-#if NETCF
+#if NETCF || COREFX
 				// Configuration APIs are not suported under the Compact Framework
 #elif NET_2_0
 				return ConfigurationManager.AppSettings[key];

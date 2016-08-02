@@ -287,7 +287,7 @@ namespace log4net.Util
 
 			s_globalRulesRegistry.Add("appdomain", typeof(AppDomainPatternConverter));
 			s_globalRulesRegistry.Add("date", typeof(DatePatternConverter));
-#if !NETCF
+#if !NETCF && !COREFX
 			s_globalRulesRegistry.Add("env", typeof(EnvironmentPatternConverter));
             s_globalRulesRegistry.Add("envFolderPath", typeof(EnvironmentFolderPathPatternConverter));
 #endif

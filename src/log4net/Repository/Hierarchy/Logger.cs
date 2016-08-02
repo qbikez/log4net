@@ -73,7 +73,7 @@ namespace log4net.Repository.Hierarchy
 		/// </remarks>
 		protected Logger(string name) 
 		{
-#if NETCF
+#if NETCF || COREFX
 			// NETCF: String.Intern causes Native Exception
 			m_name = name;
 #else
@@ -606,7 +606,7 @@ namespace log4net.Repository.Hierarchy
 				{
 					LogLog.Debug(declaringType, "    Current AppDomain context information: ");
 					LogLog.Debug(declaringType, "       BaseDirectory   : " + SystemInfo.ApplicationBaseDirectory);
-#if !NETCF
+#if !NETCF && !COREFX
 					LogLog.Debug(declaringType, "       FriendlyName    : " + AppDomain.CurrentDomain.FriendlyName);
 					LogLog.Debug(declaringType, "       DynamicDirectory: " + AppDomain.CurrentDomain.DynamicDirectory);
 #endif

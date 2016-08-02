@@ -18,7 +18,7 @@
 #endregion
 
 // .NET Compact Framework 1.0 has no support for WindowsIdentity
-#if !NETCF 
+#if !NETCF && !COREFX
 // MONO 1.0 has no support for Win32 Logon APIs
 #if !MONO
 // SSCLI 1.0 has no support for Win32 Logon APIs

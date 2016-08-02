@@ -5,14 +5,18 @@
   },
   "dependencies": {
     "System.Collections": "4.0.11",
+    "System.Diagnostics.Process": "4.1.0",
+    "System.Diagnostics.StackTrace": "4.0.1",
     "System.Globalization": "4.0.11",
-    "System.Reflection.TypeExtensions": "4.1.0"
+    "System.Reflection.TypeExtensions": "4.1.0",
+    "System.Runtime.Serialization.Primitives": "4.1.1",
+    "System.Security.Principal": "4.0.1"
   },
   "frameworks": {
     
     "netstandard1.6": {
       "buildOptions": {
-        "define": [ "NOXML", "NOASP", "NETCF","COREFX" ]
+        "define": [ "NOXML", "NOASP","COREFX" ]
       },
       "dependencies": {
         "NETStandard.Library": "1.6.0",

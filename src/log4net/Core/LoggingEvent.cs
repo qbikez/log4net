@@ -426,7 +426,7 @@ namespace log4net.Core
 
 		#region Protected Instance Constructors
 
-#if !NETCF
+#if !NETCF && !COREFX
 
 		/// <summary>
 		/// Serialization constructor
@@ -828,7 +828,7 @@ namespace log4net.Core
 			{
 				if (m_data.UserName == null  && this.m_cacheUpdatable) 
 				{
-#if (NETCF || SSCLI)
+#if (NETCF || SSCLI || COREFX)
 					// On compact framework there's no notion of current Windows user
 					m_data.UserName = SystemInfo.NotAvailableText;
 #else
@@ -876,7 +876,7 @@ namespace log4net.Core
 			{
 				if (m_data.Identity == null  && this.m_cacheUpdatable)
 				{
-#if (NETCF || SSCLI)
+#if (NETCF || SSCLI || COREFX)
 					// On compact framework there's no notion of current thread principals
 					m_data.Identity = SystemInfo.NotAvailableText;
 #else
@@ -1005,7 +1005,7 @@ namespace log4net.Core
 
 		#region Implementation of ISerializable
 
-#if !NETCF
+#if !NETCF && !COREFX
 
 		/// <summary>
 		/// Serializes this object into the <see cref="SerializationInfo" /> provided.
@@ -1320,7 +1320,7 @@ namespace log4net.Core
 			{
 				m_compositeProperties.Add(m_eventProperties);
 			}
-#if !NETCF
+#if !NETCF && !COREFX
 			PropertiesDictionary logicalThreadProperties = LogicalThreadContext.Properties.GetProperties(false);
 			if (logicalThreadProperties != null)
 			{

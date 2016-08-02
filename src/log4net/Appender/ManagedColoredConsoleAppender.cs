@@ -135,7 +135,7 @@ namespace log4net.Appender
 			{
 				string v = value.Trim();
 				
-				if (string.Compare(ConsoleError, v, true, CultureInfo.InvariantCulture) == 0) 
+				if (StringUtils.Compare(ConsoleError, v, true, CultureInfo.InvariantCulture) == 0) 
 				{
 					m_writeToErrorStream = true;
 				} 

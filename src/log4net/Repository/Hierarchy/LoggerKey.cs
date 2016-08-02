@@ -64,7 +64,7 @@ namespace log4net.Repository.Hierarchy
 		/// <param name="name">The name of the logger.</param>
 		internal LoggerKey(string name) 
 		{
-#if NETCF
+#if NETCF || COREFX
 			// NETCF: String.Intern causes Native Exception
 			m_name = name;
 #else

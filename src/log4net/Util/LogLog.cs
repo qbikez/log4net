@@ -527,9 +527,9 @@ namespace log4net.Util
 		{
 			try
 			{
-#if NETCF
+#if NETCF || COREFX
 				Console.WriteLine(message);
-				//System.Diagnostics.Debug.WriteLine(message);
+				System.Diagnostics.Debug.WriteLine(message);
 #else
 				Console.Out.WriteLine(message);
 				Trace.WriteLine(message);
@@ -561,9 +561,9 @@ namespace log4net.Util
 		{
 			try
 			{
-#if NETCF
+#if NETCF || COREFX
 				Console.WriteLine(message);
-				//System.Diagnostics.Debug.WriteLine(message);
+				System.Diagnostics.Debug.WriteLine(message);
 #else
 				Console.Error.WriteLine(message);
 				Trace.WriteLine(message);

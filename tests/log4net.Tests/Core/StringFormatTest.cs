@@ -47,17 +47,17 @@ namespace log4net.Tests.Core
 		public void SetUp()
 		{
 			// set correct thread culture
-			_currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
-			_currentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
-			System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
+			_currentCulture = System.Threading.ThreadUtils.CurrentThreadCulture;
+			_currentUICulture = System.Threading.ThreadUtils.CurrentThreadUICulture;
+		//System.Threading.ThreadUtils.CurrentThreadCulture = System.Threading.ThreadUtils.CurrentThreadUICulture = System.Globalization.CultureInfo.InvariantCulture;
 		}
 
 		[TearDown]
 		public void TearDown()
 		{
 			// restore previous culture
-			System.Threading.Thread.CurrentThread.CurrentCulture = _currentCulture;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = _currentUICulture;
+			System.Threading.ThreadUtils.CurrentThreadCulture = _currentCulture;
+			System.Threading.ThreadUtils.CurrentThreadUICulture = _currentUICulture;
 		}
 
 		[Test]

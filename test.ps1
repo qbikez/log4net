@@ -10,16 +10,17 @@ if ((get-command "vstest.console.exe" -ErrorAction Ignore) -eq $null) {
 }
 
 $tests = @(
-    @{ path = "tests\src\log4net.Tests.vs2012.csproj"; bin="tests\bin\Debug\log4net.Tests.dll"; type = "vstest.console" }   
+    @{ path = "tests\log4net.Tests\project.json"; type = "dotnet" }   
 )
 
 $reporoot = (get-item ".").FullName
 
 foreach ($t in $tests) {    
+    $dir = split-path -parent $t.path
+    $file =  split-path -leaf $t.path
+
     pushd
     try {
-        $dir = split-path -parent $t.path
-        $file =  split-path -leaf $t.path
         $testcmd = $t.type
         cd ($dir)
 
@@ -29,7 +30,11 @@ foreach ($t in $tests) {
         
         write-host "running: msbuild $file"
         
-        msbuild $file 
+        if ($t.type -eq "dotnet") {
+            dotnet build
+        } else {
+            msbuild $file 
+        }
 
         if ($lastExitCode -ne 0) {
 			write-error "failed to build test project '$file'"
@@ -73,7 +78,10 @@ foreach ($t in $tests) {
                $p += @("/logger:trx")
             }
         }
-
+        if ($testcmd -eq "dotnet") {
+            cd $dir
+            $p = @("test")
+        }
         write-host "running: $testcmd $p"
         & $testcmd $p
         if ($lastexitcode -ne 0) {

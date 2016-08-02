@@ -19,11 +19,13 @@
 
 // .NET Compact Framework 1.0 has no support for reading assembly attributes
 // and uses the CompactRepositorySelector instead
-#if !NETCF && !NOXML
+#if !NETCF
 
 using System;
 using System.Collections;
+#if !COREFX
 using System.Configuration;
+#endif
 using System.IO;
 using System.Reflection;
 
@@ -46,7 +48,7 @@ namespace log4net.Core
 	/// <author>Gert Driesen</author>
 	public class DefaultRepositorySelector : IRepositorySelector
 	{
-		#region Public Events
+#region Public Events
 
 		/// <summary>
 		/// Event to notify that a logger repository has been created.
@@ -68,9 +70,9 @@ namespace log4net.Core
 			remove { m_loggerRepositoryCreatedEvent -= value; }
 		}
 
-		#endregion Public Events
+#endregion Public Events
 
-		#region Public Instance Constructors
+#region Public Instance Constructors
 
 		/// <summary>
 		/// Creates a new repository selector.
@@ -103,9 +105,9 @@ namespace log4net.Core
 			LogLog.Debug(declaringType, "defaultRepositoryType [" + m_defaultRepositoryType + "]");
 		}
 
-		#endregion Public Instance Constructors
+#endregion Public Instance Constructors
 
-		#region Implementation of IRepositorySelector
+#region Implementation of IRepositorySelector
 
 		/// <summary>
 		/// Gets the <see cref="ILoggerRepository"/> for the specified assembly.
@@ -466,9 +468,9 @@ namespace log4net.Core
 			}
 		}
 
-		#endregion Implementation of IRepositorySelector
+#endregion Implementation of IRepositorySelector
 
-		#region Public Instance Methods
+#region Public Instance Methods
 
 		/// <summary>
 		/// Aliases a repository to an existing repository.
@@ -531,9 +533,9 @@ namespace log4net.Core
 			}
 		}
 
-		#endregion Public Instance Methods
+#endregion Public Instance Methods
 
-		#region Protected Instance Methods
+#region Protected Instance Methods
 
 		/// <summary>
 		/// Notifies the registered listeners that the repository has been created.
@@ -553,9 +555,9 @@ namespace log4net.Core
 			}
 		}
 
-		#endregion Protected Instance Methods
+#endregion Protected Instance Methods
 
-		#region Private Instance Methods
+#region Private Instance Methods
 
 		/// <summary>
 		/// Gets the repository name and repository type for the specified assembly.
@@ -582,9 +584,13 @@ namespace log4net.Core
 
 			try
 			{
-				// Look for the RepositoryAttribute on the assembly 
-				object[] repositoryAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.RepositoryAttribute), false);
-				if (repositoryAttributes == null || repositoryAttributes.Length == 0)
+                // Look for the RepositoryAttribute on the assembly 
+#if COREFX
+                object[] repositoryAttributes = null;
+#else
+                object[] repositoryAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.RepositoryAttribute), false);
+#endif
+                if (repositoryAttributes == null || repositoryAttributes.Length == 0)
 				{
 					// This is not a problem, but its nice to know what is going on.
 					LogLog.Debug(declaringType, "Assembly [" + assembly + "] does not have a RepositoryAttribute specified.");
@@ -654,9 +660,13 @@ namespace log4net.Core
 				throw new ArgumentNullException("repository");
 			}
 
-			// Look for the Configurator attributes (e.g. XmlConfiguratorAttribute) on the assembly
-			object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.ConfiguratorAttribute), false);
-			if (configAttributes != null && configAttributes.Length > 0)
+#if COREFX
+            object[] configAttributes = null;
+#else
+            // Look for the Configurator attributes (e.g. XmlConfiguratorAttribute) on the assembly
+            object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.ConfiguratorAttribute), false);
+#endif
+            if (configAttributes != null && configAttributes.Length > 0)
 			{
 				// Sort the ConfiguratorAttributes in priority order
 				Array.Sort(configAttributes);
@@ -737,7 +747,8 @@ namespace log4net.Core
 						{
                             LogLog.Error(declaringType, "DefaultRepositorySelector: Exception while parsing log4net.Config file physical path [" + repositoryConfigFilePath + "]", ex);
 						}
-						try
+#if !COREFX
+                        try
 						{
                             LogLog.Debug(declaringType, "Loading and watching configuration for default repository from AppSettings specified Config path [" + repositoryConfigFilePath + "]");
 
@@ -747,6 +758,7 @@ namespace log4net.Core
 						{
                             LogLog.Error(declaringType, "DefaultRepositorySelector: Exception calling XmlConfigurator.ConfigureAndWatch method with ConfigFilePath [" + repositoryConfigFilePath + "]", ex);
 						}
+#endif
 					}
 					else
 					{
@@ -761,8 +773,8 @@ namespace log4net.Core
 					{
 						LogLog.Error(declaringType, "Exception while parsing log4net.Config file path ["+repositoryConfigFile+"]", ex);
 					}
-
-					if (repositoryConfigUri != null)
+#if !COREFX
+                        if (repositoryConfigUri != null)
 					{
 						LogLog.Debug(declaringType, "Loading configuration for default repository from AppSettings specified Config URI ["+repositoryConfigUri.ToString()+"]");
 
@@ -776,22 +788,23 @@ namespace log4net.Core
 							LogLog.Error(declaringType, "Exception calling XmlConfigurator.Configure method with ConfigUri ["+repositoryConfigUri+"]", ex);
 						}
 					}
+#endif
                     }
-				}
-			}
-		}
+                }
+                    }
+                    }
 
-		/// <summary>
-		/// Loads the attribute defined plugins on the assembly.
-		/// </summary>
-		/// <param name="assembly">The assembly that contains the attributes.</param>
-		/// <param name="repository">The repository to add the plugins to.</param>
-		/// <exception cref="ArgumentNullException">
-		///	<para><paramref name="assembly" /> is <see langword="null" />.</para>
-		///	<para>-or-</para>
-		///	<para><paramref name="repository" /> is <see langword="null" />.</para>
-		/// </exception>
-		private void LoadPlugins(Assembly assembly, ILoggerRepository repository)
+        /// <summary>
+        /// Loads the attribute defined plugins on the assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly that contains the attributes.</param>
+        /// <param name="repository">The repository to add the plugins to.</param>
+        /// <exception cref="ArgumentNullException">
+        ///	<para><paramref name="assembly" /> is <see langword="null" />.</para>
+        ///	<para>-or-</para>
+        ///	<para><paramref name="repository" /> is <see langword="null" />.</para>
+        /// </exception>
+        private void LoadPlugins(Assembly assembly, ILoggerRepository repository)
 		{
 			if (assembly == null)
 			{
@@ -801,9 +814,9 @@ namespace log4net.Core
 			{
 				throw new ArgumentNullException("repository");
 			}
-
-			// Look for the PluginAttribute on the assembly
-			object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.PluginAttribute), false);
+#if !COREFX
+            // Look for the PluginAttribute on the assembly
+            object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.PluginAttribute), false);
 			if (configAttributes != null && configAttributes.Length > 0)
 			{
 				foreach(log4net.Plugin.IPluginFactory configAttr in configAttributes)
@@ -819,6 +832,7 @@ namespace log4net.Core
 					}
 				}
 			}
+#endif
 		}
 
 		/// <summary>
@@ -841,10 +855,10 @@ namespace log4net.Core
 			{
 				throw new ArgumentNullException("repository");
 			}
-
-			// Look for the AliasRepositoryAttribute on the assembly
-			object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.AliasRepositoryAttribute), false);
-			if (configAttributes != null && configAttributes.Length > 0)
+#if !COREFX
+            // Look for the AliasRepositoryAttribute on the assembly
+            object[] configAttributes = Attribute.GetCustomAttributes(assembly, typeof(log4net.Config.AliasRepositoryAttribute), false);
+            if (configAttributes != null && configAttributes.Length > 0)
 			{
 				foreach(log4net.Config.AliasRepositoryAttribute configAttr in configAttributes)
 				{
@@ -858,11 +872,12 @@ namespace log4net.Core
 					}
 				}
 			}
+#endif
 		}
 
-		#endregion Private Instance Methods
+#endregion Private Instance Methods
 
-		#region Private Static Fields
+#region Private Static Fields
 
         /// <summary>
         /// The fully qualified type of the DefaultRepositorySelector class.
@@ -875,9 +890,9 @@ namespace log4net.Core
 
 		private const string DefaultRepositoryName = "log4net-default-repository";
 
-		#endregion Private Static Fields
+#endregion Private Static Fields
 
-		#region Private Instance Fields
+#region Private Instance Fields
 
 		private readonly Hashtable m_name2repositoryMap = new Hashtable();
 		private readonly Hashtable m_assembly2repositoryMap = new Hashtable();
@@ -886,7 +901,7 @@ namespace log4net.Core
 
 		private event LoggerRepositoryCreationEventHandler m_loggerRepositoryCreatedEvent;
 
-		#endregion Private Instance Fields
+#endregion Private Instance Fields
 	}
 }
 

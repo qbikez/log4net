@@ -116,9 +116,9 @@ namespace log4net.Tests.Appender
 			InitializeVariables();
 
 			// set correct thread culture
-			_currentCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
-			_currentUICulture = System.Threading.Thread.CurrentThread.CurrentUICulture;
-			System.Threading.Thread.CurrentThread.CurrentCulture = System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.InvariantCulture;
+			_currentCulture = System.Threading.ThreadUtils.CurrentThreadCulture;
+			_currentUICulture = System.Threading.ThreadUtils.CurrentThreadUICulture;
+			System.Threading.ThreadUtils.CurrentThreadCulture = System.Threading.ThreadUtils.CurrentThreadUICulture = System.Globalization.CultureInfo.InvariantCulture;
 		}
 
 		/// <summary>
@@ -130,8 +130,8 @@ namespace log4net.Tests.Appender
 			ResetAndDeleteTestFiles();
 			
 			// restore previous culture
-			System.Threading.Thread.CurrentThread.CurrentCulture = _currentCulture;
-			System.Threading.Thread.CurrentThread.CurrentUICulture = _currentUICulture;
+			System.Threading.ThreadUtils.CurrentThreadCulture = _currentCulture;
+			System.Threading.ThreadUtils.CurrentThreadUICulture = _currentUICulture;
 		}
 
 		/// <summary>
@@ -1454,11 +1454,14 @@ namespace log4net.Tests.Appender
 
 		private static void AssertFileEquals(string filename, string contents)
 		{
-			StreamReader sr = new StreamReader(filename);
+			StreamReader sr = new StreamReader(new FileStream(filename, FileMode.Open));
 			string logcont = sr.ReadToEnd();
-			sr.Close();
-
-			Assert.AreEqual(contents, logcont, "Log contents is not what is expected");
+#if COREFX
+            sr.Dispose();
+#else
+            sr.Close();
+#endif
+            Assert.AreEqual(contents, logcont, "Log contents is not what is expected");
 
 			File.Delete(filename);
 		}

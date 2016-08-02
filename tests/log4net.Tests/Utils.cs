@@ -38,20 +38,33 @@ namespace log4net.Tests
 
 		public static object CreateInstance(Type targetType)
 		{
-			return targetType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null).Invoke(null);
-		}
+#if !COREFX
+            return targetType.GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[0], null).Invoke(null);
+#else
+            return targetType.GetConstructor(new Type[0]).Invoke(null);
+#endif
+        }
 
-		public static object InvokeMethod(object target, string name, params object[] args)
+        public static object InvokeMethod(object target, string name, params object[] args)
 		{
-			return target.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, null, GetTypesArray(args), null).Invoke(target, args);
-		}
+#if !COREFX
+            return target.GetType().GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance, null, GetTypesArray(args), null).Invoke(target, args);
+#else
+            return target.GetType().GetMethod(name, GetTypesArray(args)).Invoke(target, args);
+#endif
+        }
 
 		public static object InvokeMethod(Type target, string name, params object[] args)
 		{
-			return target.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, GetTypesArray(args), null).Invoke(null, args);
-		}
+#if !COREFX
+            return target.GetMethod(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static, null, GetTypesArray(args), null).Invoke(null, args);
+#else
+            return target.GetMethod(name,GetTypesArray(args)).Invoke(null, args);
 
-		public static object GetField(object target, string name)
+#endif
+        }
+
+        public static object GetField(object target, string name)
 		{
 			return target.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance).GetValue(target);
 		}
@@ -105,7 +118,9 @@ namespace log4net.Tests
         internal static void RemovePropertyFromAllContexts() {
             GlobalContext.Properties.Remove(PROPERTY_KEY);
             ThreadContext.Properties.Remove(PROPERTY_KEY);
+#if !COREFX
             LogicalThreadContext.Properties.Remove(PROPERTY_KEY);
+#endif
         }
 	}
 }

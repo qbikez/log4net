@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "log4net", "log4net\log4net.xproj", "{A8014DCF-EDD3-40FA-942C-A95D1C7C1131}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "log4net", "src\log4net\log4net.xproj", "{A8014DCF-EDD3-40FA-942C-A95D1C7C1131}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "log4net.Tests", "..\tests\log4net.Tests\log4net.Tests.xproj", "{63ADF0C6-F3B6-4E20-ABC7-2621DAC58A77}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "log4net.Tests", "tests\log4net.Tests\log4net.Tests.xproj", "{63ADF0C6-F3B6-4E20-ABC7-2621DAC58A77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

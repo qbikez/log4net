@@ -23,6 +23,8 @@ using log4net.Appender;
 using log4net.Core;
 
 using NUnit.Framework;
+using System.Security.Principal;
+using System;
 
 namespace log4net.Tests.Appender
 {
@@ -75,6 +77,34 @@ namespace log4net.Tests.Appender
 				GetEntryType(eventAppender, Level.Off));
 		}
 
+
+        private bool IsUserAdministrator()
+        {
+            //bool value to hold our return value
+            bool isAdmin;
+            WindowsIdentity user = null;
+            try
+            {
+                //get the currently logged in user
+                user = WindowsIdentity.GetCurrent();
+                WindowsPrincipal principal = new WindowsPrincipal(user);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                isAdmin = false;
+            }
+            catch (Exception ex)
+            {
+                isAdmin = false;
+            }
+            finally
+            {
+                if (user != null)
+                    user.Dispose();
+            }
+            return isAdmin;
+        }
         /// <summary>
         /// ActivateOption tries to create an event source if it doesn't exist but this is going to fail on more modern Windows versions unless the code is run with local administrator privileges.
         /// </summary>
@@ -84,7 +114,14 @@ namespace log4net.Tests.Appender
         {
             EventLogAppender eventAppender = new EventLogAppender();
             eventAppender.ActivateOptions();
-            Assert.AreEqual(Level.Off, eventAppender.Threshold);
+            if (!IsUserAdministrator())
+            {
+                Assert.AreEqual(Level.Off, eventAppender.Threshold);
+            } 
+            else
+            {
+                Assert.AreEqual(null, eventAppender.Threshold);
+            }
         }
 
 		//

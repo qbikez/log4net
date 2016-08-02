@@ -4,3 +4,4 @@ obj/
 packages/
 src/GeneratedAssemblyInfo.cs
 src/log4net.xml
+.vs/

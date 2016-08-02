@@ -1,2 +1,3 @@
-msbuild src/log4net.vs2012.sln
+msbuild log4net.sln
+if ($LASTEXITCODE -ne 0) { throw "build failed'" }
 # .\build.cmd

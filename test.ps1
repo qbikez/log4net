@@ -80,12 +80,26 @@ foreach ($t in $tests) {
         }
         if ($testcmd -eq "dotnet") {
             cd $dir
-            $p = @("test")
+            $p = @("test")            
         }
         write-host "running: $testcmd $p"
         & $testcmd $p
+
+        if ($testcmd -eq "dotnet") {
+            if ($env:APPVEYOR -eq "True") {
+                write-host "uploading test results to appveyor from '$(Resolve-Path .\TestResult.xml)'"
+                if (!(test-path ".\TestResult.xml")) {
+                    throw "TestResult.xml not found!"
+                }
+                $wc = New-Object 'System.Net.WebClient'
+                $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\TestResult.xml))
+                write-host "results uploaded"
+            }
+        }
+
         if ($lastexitcode -ne 0) {
             write-warning "$testcmd exited with $lastexitcode"
+            throw "'$testcmd $p' in '$dir' failed"
         }
 
     } 

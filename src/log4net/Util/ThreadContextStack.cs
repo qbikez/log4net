@@ -27,16 +27,20 @@ using log4net.Core;
 
 namespace log4net.Util
 {
-	/// <summary>
-	/// Implementation of Stack for the <see cref="log4net.ThreadContext"/>
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Implementation of Stack for the <see cref="log4net.ThreadContext"/>
-	/// </para>
-	/// </remarks>
-	/// <author>Nicko Cadell</author>
-	public sealed class ThreadContextStack : IFixingRequired
+#if COREFX
+    using Stack = System.Collections.Generic.Stack<object>;
+#endif
+
+    /// <summary>
+    /// Implementation of Stack for the <see cref="log4net.ThreadContext"/>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Implementation of Stack for the <see cref="log4net.ThreadContext"/>
+    /// </para>
+    /// </remarks>
+    /// <author>Nicko Cadell</author>
+    public sealed class ThreadContextStack : IFixingRequired
 	{
 		#region Private Static Fields
 

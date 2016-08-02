@@ -24,14 +24,16 @@ using log4net.Core;
 
 namespace log4net.Util
 {
-
-        /// <summary>
-	/// Delegate type used for LogicalThreadContextStack's callbacks.
-	/// </summary>
-    #if NET_2_0 || MONO_2_0
+#if COREFX
+    using Stack = System.Collections.Generic.Stack<object>;
+#endif
+    /// <summary>
+    /// Delegate type used for LogicalThreadContextStack's callbacks.
+    /// </summary>
+#if NET_2_0 || MONO_2_0
 	public delegate void TwoArgAction<T1, T2>(T1 t1, T2 t2);
-    #else
-	public delegate void TwoArgAction(string t1, LogicalThreadContextStack t2);
+#else
+    public delegate void TwoArgAction(string t1, LogicalThreadContextStack t2);
     #endif
 
         /// <summary>

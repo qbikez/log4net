@@ -227,8 +227,10 @@ namespace log4net.Util
 				return System.Threading.Thread.CurrentThread.GetHashCode();
 #elif NET_2_0 || NETCF_2_0 || MONO_2_0 || MONO_3_5 || MONO_4_0
 				return System.Threading.Thread.CurrentThread.ManagedThreadId;
+#elif COREFX
+                return System.Threading.Thread.CurrentThread.ManagedThreadId;
 #else
-				return AppDomain.GetCurrentThreadId();
+                return AppDomain.GetCurrentThreadId();
 #endif
 			}
 		}

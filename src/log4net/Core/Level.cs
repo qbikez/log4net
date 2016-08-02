@@ -111,8 +111,12 @@ namespace log4net.Core
 			}
 
 			m_levelValue = level;
-			m_levelName = string.Intern(levelName);
-			m_levelDisplayName = displayName;
+#if COREFX
+            m_levelName = levelName;
+#else
+            m_levelName = string.Intern(levelName);
+#endif
+            m_levelDisplayName = displayName;
 		}
 
 		/// <summary>

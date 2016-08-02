@@ -286,7 +286,7 @@ namespace log4net.Util
 			}
 			else
 			{
-				if (target.IsEnum)
+				if (target.IsEnumerable())
 				{
 					// Target type is an enum.
 

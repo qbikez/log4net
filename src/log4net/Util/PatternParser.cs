@@ -263,7 +263,7 @@ namespace log4net.Util
 						{
 							if (matches[m].Length <= remainingStringLength)
 							{
-								if (String.Compare(pattern, offset, matches[m], 0, matches[m].Length, false, System.Globalization.CultureInfo.InvariantCulture) == 0)
+								if (StringUtils.Compare(pattern, offset, matches[m], 0, matches[m].Length, false, System.Globalization.CultureInfo.InvariantCulture) == 0)
 								{
 									// Found match
 									offset = offset + matches[m].Length;

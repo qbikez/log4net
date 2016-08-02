@@ -243,14 +243,18 @@ namespace log4net.Appender
 		{
 			if (m_mutexForRolling != null)
 			{
-				m_mutexForRolling.Close();
-				m_mutexForRolling = null;
+#if COREFX
+                m_mutexForRolling.Dispose();
+#else
+                m_mutexForRolling.Close();
+#endif
+                m_mutexForRolling = null;
 			}
 		}
 
-		#endregion Public Instance Constructors
+#endregion Public Instance Constructors
 
-		#region Public Instance Properties
+#region Public Instance Properties
 
 #if !NET_1_0 && !CLI_1_0 && !NETCF
         /// <summary>
@@ -530,9 +534,9 @@ namespace log4net.Appender
 			set { m_staticLogFileName = value; }
 		}
 
-		#endregion Public Instance Properties
+#endregion Public Instance Properties
 
-	    #region Private Static Fields
+#region Private Static Fields
 
 	    /// <summary>
 	    /// The fully qualified type of the RollingFileAppender class.
@@ -543,9 +547,9 @@ namespace log4net.Appender
 	    /// </remarks>
 	    private readonly static Type declaringType = typeof(RollingFileAppender);
 
-	    #endregion Private Static Fields
+#endregion Private Static Fields
 
-		#region Override implementation of FileAppender 
+#region Override implementation of FileAppender 
   
 		/// <summary>
 		/// Sets the quiet writer being used.
@@ -731,9 +735,9 @@ namespace log4net.Appender
 			return fileName;
 		}
 
-		#endregion
+#endregion
 
-		#region Initialize Options
+#region Initialize Options
 
 		/// <summary>
 		///	Determines curSizeRollBackups (only within the current roll point)
@@ -1161,9 +1165,9 @@ namespace log4net.Appender
 			base.ActivateOptions();
 		}
 
-		#endregion
+#endregion
   
-		#region Roll File
+#region Roll File
 
         /// <summary>
         /// 
@@ -1501,9 +1505,9 @@ namespace log4net.Appender
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region NextCheckDate
+#region NextCheckDate
 
 		/// <summary>
 		/// Get the start time of the next window for the current rollpoint
@@ -1587,9 +1591,9 @@ namespace log4net.Appender
 			return current;
 		}
 
-		#endregion
+#endregion
 
-		#region Private Instance Fields
+#region Private Instance Fields
 
 		/// <summary>
 		/// This object supplies the current date/time.  Allows test code to plug in
@@ -1682,18 +1686,18 @@ namespace log4net.Appender
 		/// </summary>
 		private Mutex m_mutexForRolling;
   
-		#endregion Private Instance Fields
+#endregion Private Instance Fields
 
-		#region Static Members
+#region Static Members
 
 		/// <summary>
 		/// The 1st of January 1970 in UTC
 		/// </summary>
 		private static readonly DateTime s_date1970 = new DateTime(1970, 1, 1);
 
-		#endregion
+#endregion
 
-		#region DateTime
+#region DateTime
 
 		/// <summary>
 		/// This interface is used to supply Date/Time information to the <see cref="RollingFileAppender"/>.
@@ -1759,6 +1763,6 @@ namespace log4net.Appender
 		}
 #endif
 
-        #endregion DateTime
+#endregion DateTime
 	}
 }

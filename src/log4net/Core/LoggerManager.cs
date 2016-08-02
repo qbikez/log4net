@@ -768,7 +768,7 @@ namespace log4net.Core
 		/// <para>
 		/// The caller to <see cref="LogManager"/> supplies either a string name 
 		/// or an assembly (if not supplied the assembly is inferred using 
-		/// <see cref="M:Assembly.GetCallingAssembly()"/>).
+		/// <see cref="M:AssemblyUtils.GetCallingAssembly()"/>).
 		/// </para>
 		/// <para>
 		/// This context is used by the selector to lookup a specific repository.

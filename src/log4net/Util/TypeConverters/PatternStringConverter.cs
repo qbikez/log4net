@@ -21,6 +21,7 @@ using System;
 using System.Text;
 
 using log4net.Util;
+using System.Reflection;
 
 namespace log4net.Util.TypeConverters
 {

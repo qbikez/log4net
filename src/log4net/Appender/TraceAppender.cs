@@ -158,9 +158,11 @@ namespace log4net.Appender
 			if (m_immediateFlush) 
 			{
 #if NETCF
-				System.Diagnostics.Debug.Flush();
+#if !COREFX
+                System.Diagnostics.Debug.Flush();
+#endif
 #else
-				System.Diagnostics.Trace.Flush();
+                System.Diagnostics.Trace.Flush();
 #endif
 			} 
 		}

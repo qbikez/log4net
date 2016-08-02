@@ -115,8 +115,9 @@ namespace log4net.Util.TypeConverters
 						}
 					}
 
-					// Try to resolve via DNS. This is a blocking call.
-					IPHostEntry host = Dns.GetHostByName(str);
+#if !COREFX
+                    // Try to resolve via DNS. This is a blocking call.
+                    IPHostEntry host = Dns.GetHostByName(str);
 					if (host != null && 
 						host.AddressList != null && 
 						host.AddressList.Length > 0 &&
@@ -125,7 +126,8 @@ namespace log4net.Util.TypeConverters
 						return host.AddressList[0];
 					}
 #endif
-				}
+#endif
+                }
 				catch(Exception ex)
 				{
 					throw ConversionNotSupportedException.Create(typeof(IPAddress), source, ex);

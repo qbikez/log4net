@@ -127,7 +127,9 @@ namespace log4net.Appender
 			//
 			if (m_immediateFlush) 
 			{
-				System.Diagnostics.Debug.Flush();
+#if !COREFX
+                System.Diagnostics.Debug.Flush();
+#endif
 			} 
 		}
 
@@ -145,9 +147,9 @@ namespace log4net.Appender
 			get { return true; }
 		}
 
-		#endregion Override implementation of AppenderSkeleton
+#endregion Override implementation of AppenderSkeleton
 
-		#region Private Instance Fields
+#region Private Instance Fields
 
 		/// <summary>
 		/// Immediate flush means that the underlying writer or output stream
@@ -166,6 +168,6 @@ namespace log4net.Appender
 		/// </remarks>
 		private bool m_immediateFlush = true;
 
-		#endregion Private Instance Fields
+#endregion Private Instance Fields
 	}
 }

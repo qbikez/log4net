@@ -120,15 +120,15 @@ namespace log4net.Util.PatternStringConverters
 				dateFormatStr = AbsoluteTimeDateFormatter.Iso8601TimeDateFormat;
 			}
 			
-			if (string.Compare(dateFormatStr, AbsoluteTimeDateFormatter.Iso8601TimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0) 
+			if (StringUtils.Compare(dateFormatStr, AbsoluteTimeDateFormatter.Iso8601TimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0) 
 			{
 				m_dateFormatter = new Iso8601DateFormatter();
 			}
-			else if (string.Compare(dateFormatStr, AbsoluteTimeDateFormatter.AbsoluteTimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0)
+			else if (StringUtils.Compare(dateFormatStr, AbsoluteTimeDateFormatter.AbsoluteTimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0)
 			{
 				m_dateFormatter = new AbsoluteTimeDateFormatter();
 			}
-			else if (string.Compare(dateFormatStr, AbsoluteTimeDateFormatter.DateAndTimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0)
+			else if (StringUtils.Compare(dateFormatStr, AbsoluteTimeDateFormatter.DateAndTimeDateFormat, true, System.Globalization.CultureInfo.InvariantCulture) == 0)
 			{
 				m_dateFormatter = new DateTimeDateFormatter();
 			}

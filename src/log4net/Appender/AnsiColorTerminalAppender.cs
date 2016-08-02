@@ -253,7 +253,7 @@ namespace log4net.Appender
 			{
 				string trimmedTargetName = value.Trim();
 				
-				if (string.Compare(ConsoleError, trimmedTargetName, true, CultureInfo.InvariantCulture) == 0) 
+				if (StringUtils.Compare(ConsoleError, trimmedTargetName, true, CultureInfo.InvariantCulture) == 0) 
 				{
 					m_writeToErrorStream = true;
 				} 

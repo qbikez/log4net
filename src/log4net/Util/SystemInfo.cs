@@ -640,7 +640,7 @@ namespace log4net.Util
 		/// </remarks>
 		public static Type GetTypeFromString(string typeName, bool throwOnError, bool ignoreCase)
 		{
-			return GetTypeFromString(Assembly.GetCallingAssembly(), typeName, throwOnError, ignoreCase);
+			return GetTypeFromString(AssemblyUtils.GetCallingAssembly(), typeName, throwOnError, ignoreCase);
 		}
 
 		/// <summary>

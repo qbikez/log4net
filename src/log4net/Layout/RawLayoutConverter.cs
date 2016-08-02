@@ -22,6 +22,7 @@ using System;
 using log4net;
 using log4net.Core;
 using log4net.Util.TypeConverters;
+using System.Reflection;
 
 namespace log4net.Layout
 {

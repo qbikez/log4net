@@ -87,7 +87,7 @@ namespace log4net
 		/// <returns>The logger found, or <c>null</c> if no logger could be found.</returns>
 		public static ILog Exists(string name) 
 		{
-			return Exists(Assembly.GetCallingAssembly(), name);
+			return Exists(AssemblyUtils.GetCallingAssembly(), name);
 		}
 
 		/// <summary>
@@ -142,7 +142,7 @@ namespace log4net
 		/// <returns>All the defined loggers.</returns>
 		public static ILog[] GetCurrentLoggers()
 		{
-			return GetCurrentLoggers(Assembly.GetCallingAssembly());
+			return GetCurrentLoggers(AssemblyUtils.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -191,7 +191,7 @@ namespace log4net
 		/// <returns>The logger with the name specified.</returns>
 		public static ILog GetLogger(string name)
 		{
-			return GetLogger(Assembly.GetCallingAssembly(), name);
+			return GetLogger(AssemblyUtils.GetCallingAssembly(), name);
 		}
 
 		/// <summary>
@@ -252,7 +252,7 @@ namespace log4net
 		/// <returns>The logger with the name specified.</returns>
 		public static ILog GetLogger(Type type) 
 		{
-			return GetLogger(Assembly.GetCallingAssembly(), type.FullName);
+			return GetLogger(AssemblyUtils.GetCallingAssembly(), type.FullName);
 		}
 
 		/// <summary>
@@ -332,7 +332,7 @@ namespace log4net
 		/// </remarks>
 		public static void ShutdownRepository() 
 		{
-			ShutdownRepository(Assembly.GetCallingAssembly());
+			ShutdownRepository(AssemblyUtils.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -403,7 +403,7 @@ namespace log4net
 		/// </remarks>
 		public static void ResetConfiguration() 
 		{
-			ResetConfiguration(Assembly.GetCallingAssembly());
+			ResetConfiguration(AssemblyUtils.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -451,14 +451,14 @@ namespace log4net
 		/// <remarks>
 		/// <para>
 		/// Gets the <see cref="ILoggerRepository"/> for the repository specified
-		/// by the callers assembly (<see cref="M:Assembly.GetCallingAssembly()"/>).
+		/// by the callers assembly (<see cref="M:AssemblyUtils.GetCallingAssembly()"/>).
 		/// </para>
 		/// </remarks>
 		/// <returns>The <see cref="ILoggerRepository"/> instance for the default repository.</returns>
 		[Obsolete("Use GetRepository instead of GetLoggerRepository")]
 		public static ILoggerRepository GetLoggerRepository()
 		{
-			return GetRepository(Assembly.GetCallingAssembly());
+			return GetRepository(AssemblyUtils.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -502,13 +502,13 @@ namespace log4net
 		/// <remarks>
 		/// <para>
 		/// Gets the <see cref="ILoggerRepository"/> for the repository specified
-		/// by the callers assembly (<see cref="M:Assembly.GetCallingAssembly()"/>).
+		/// by the callers assembly (<see cref="M:AssemblyUtils.GetCallingAssembly()"/>).
 		/// </para>
 		/// </remarks>
 		/// <returns>The <see cref="ILoggerRepository"/> instance for the default repository.</returns>
 		public static ILoggerRepository GetRepository()
 		{
-			return GetRepository(Assembly.GetCallingAssembly());
+			return GetRepository(AssemblyUtils.GetCallingAssembly());
 		}
 
 		/// <summary>
@@ -564,7 +564,7 @@ namespace log4net
 		[Obsolete("Use CreateRepository instead of CreateDomain")]
 		public static ILoggerRepository CreateDomain(Type repositoryType)
 		{
-			return CreateRepository(Assembly.GetCallingAssembly(), repositoryType);
+			return CreateRepository(AssemblyUtils.GetCallingAssembly(), repositoryType);
 		}
 
 		/// <overloads>Create a logger repository.</overloads>
@@ -584,7 +584,7 @@ namespace log4net
 		/// </remarks>
 		public static ILoggerRepository CreateRepository(Type repositoryType)
 		{
-			return CreateRepository(Assembly.GetCallingAssembly(), repositoryType);
+			return CreateRepository(AssemblyUtils.GetCallingAssembly(), repositoryType);
 		}
 
 		/// <summary>

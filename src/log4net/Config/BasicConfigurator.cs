@@ -96,7 +96,7 @@ namespace log4net.Config
 		/// </remarks>
         static public ICollection Configure()
 		{
-		    return BasicConfigurator.Configure(LogManager.GetRepository(Assembly.GetCallingAssembly()));
+		    return BasicConfigurator.Configure(LogManager.GetRepository(AssemblyUtils.GetCallingAssembly()));
 		}
 
 	    /// <summary>
@@ -126,7 +126,7 @@ namespace log4net.Config
         {
             ArrayList configurationMessages = new ArrayList();
 
-            ILoggerRepository repository = LogManager.GetRepository(Assembly.GetCallingAssembly());
+            ILoggerRepository repository = LogManager.GetRepository(AssemblyUtils.GetCallingAssembly());
 
             using (new LogLog.LogReceivedAdapter(configurationMessages))
             {

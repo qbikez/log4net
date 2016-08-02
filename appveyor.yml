@@ -1,0 +1,13 @@
+version: 1.0.{build}
+
+init:
+
+install:
+  - ps: .\init.ps1
+  - ps: .\restore.ps1
+
+build_script:
+  - ps: .\build.ps1
+
+test_script:
+  - ps: .\test.ps1

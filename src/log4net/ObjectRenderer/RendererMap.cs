@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 using log4net.Util;
+using System.Reflection;
 
 namespace log4net.ObjectRenderer
 {
@@ -216,7 +217,7 @@ namespace log4net.ObjectRenderer
 
 			if (result == null)
 			{
-				for(Type cur = type; cur != null; cur = cur.BaseType)
+				for(Type cur = type; cur != null; cur = cur.GetBaseType())
 				{
 					// Search the type's interfaces
 					result = SearchTypeAndInterfaces(cur);

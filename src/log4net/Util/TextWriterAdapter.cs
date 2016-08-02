@@ -136,34 +136,39 @@ namespace log4net.Util
 		{
 			get { return m_writer.NewLine; }
 			set { m_writer.NewLine = value; }
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Closes the writer and releases any system resources associated with the writer
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// </para>
+        /// </remarks>
+#if !COREFX
+        override public void Close() 
+#else
+        public virtual void Close()
+#endif
+        {
+            m_writer.Close();
 		}
+      
 
-		#endregion
-
-		#region Public Methods
-
-		/// <summary>
-		/// Closes the writer and releases any system resources associated with the writer
-		/// </summary>
-		/// <remarks>
-		/// <para>
-		/// </para>
-		/// </remarks>
-		override public void Close() 
-		{
-			m_writer.Close();
-		}
-
-		/// <summary>
-		/// Dispose this writer
-		/// </summary>
-		/// <param name="disposing">flag indicating if we are being disposed</param>
-		/// <remarks>
-		/// <para>
-		/// Dispose this writer
-		/// </para>
-		/// </remarks>
-		override protected void Dispose(bool disposing)
+        /// <summary>
+        /// Dispose this writer
+        /// </summary>
+        /// <param name="disposing">flag indicating if we are being disposed</param>
+        /// <remarks>
+        /// <para>
+        /// Dispose this writer
+        /// </para>
+        /// </remarks>
+        override protected void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -229,6 +234,6 @@ namespace log4net.Util
 			m_writer.Write(value);
 		}
 
-		#endregion
+#endregion
 	}
 }

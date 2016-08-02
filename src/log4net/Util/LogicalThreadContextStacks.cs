@@ -17,9 +17,10 @@
 //
 #endregion
 
+#if !COREFX
+
 using System;
 using System.Collections;
-
 namespace log4net.Util
 {
 	/// <summary>
@@ -33,9 +34,11 @@ namespace log4net.Util
 	/// <author>Nicko Cadell</author>
 	public sealed class LogicalThreadContextStacks
 	{
-		private readonly LogicalThreadContextProperties m_properties;
 
-		#region Public Instance Constructors
+        private readonly LogicalThreadContextProperties m_properties;
+
+
+#region Public Instance Constructors
 
 		/// <summary>
 		/// Internal constructor
@@ -50,22 +53,22 @@ namespace log4net.Util
 			m_properties = properties;
 		}
 
-		#endregion Public Instance Constructors
 
-		#region Public Instance Properties
+#endregion Public Instance Constructors
+#region Public Instance Properties
 
-		/// <summary>
-		/// Gets the named thread context stack
-		/// </summary>
-		/// <value>
-		/// The named stack
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// Gets the named thread context stack
-		/// </para>
-		/// </remarks>
-		public LogicalThreadContextStack this[string key]
+/// <summary>
+/// Gets the named thread context stack
+/// </summary>
+/// <value>
+/// The named stack
+/// </value>
+/// <remarks>
+/// <para>
+/// Gets the named thread context stack
+/// </para>
+/// </remarks>
+public LogicalThreadContextStack this[string key]
 		{
 			get
 			{
@@ -113,18 +116,18 @@ namespace log4net.Util
 			}
 		}
 
-		#endregion Public Instance Properties
+#endregion Public Instance Properties
 
-		#region Private Instance Fields
+#region Private Instance Fields
 
 		private void registerNew(string stackName, LogicalThreadContextStack stack)
 		{
 			m_properties[stackName] = stack;
 		}
 
-		#endregion Private Instance Fields
+#endregion Private Instance Fields
 
-		#region Private Static Fields
+#region Private Static Fields
 
 		/// <summary>
 		/// The fully qualified type of the ThreadContextStacks class.
@@ -135,7 +138,8 @@ namespace log4net.Util
 		/// </remarks>
 		private readonly static Type declaringType = typeof(LogicalThreadContextStacks);
 
-		#endregion Private Static Fields
+#endregion Private Static Fields
 	}
 }
 
+#endif

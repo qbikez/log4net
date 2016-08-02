@@ -208,31 +208,31 @@ namespace log4net.Core
 		/// <value>true if access to the ICollection is synchronized (thread-safe); otherwise, false.</value>
 		public virtual bool IsSynchronized
 		{
-			get { return m_array.IsSynchronized; }
+			get { return m_array.IsArraySynchronized(); }
 		}
 
-		/// <summary>
-		/// Gets an object that can be used to synchronize access to the collection.
-		/// </summary>
-		public virtual object SyncRoot
-		{
-			get { return m_array.SyncRoot; }
-		}
+        /// <summary>
+        /// Gets an object that can be used to synchronize access to the collection.
+        /// </summary>
+        public virtual object SyncRoot
+        {
+            get { return m_array.GetSyncRoot(); }
+        }
 
-		#endregion
-		
-		#region Operations (type-safe IList)
+        #endregion
 
-		/// <summary>
-		/// Gets or sets the <see cref="Level"/> at the specified index.
-		/// </summary>
-		/// <param name="index">The zero-based index of the element to get or set.</param>
-		/// <exception cref="ArgumentOutOfRangeException">
-		/// <para><paramref name="index"/> is less than zero</para>
-		/// <para>-or-</para>
-		/// <para><paramref name="index"/> is equal to or greater than <see cref="LevelCollection.Count"/>.</para>
-		/// </exception>
-		public virtual Level this[int index]
+        #region Operations (type-safe IList)
+
+        /// <summary>
+        /// Gets or sets the <see cref="Level"/> at the specified index.
+        /// </summary>
+        /// <param name="index">The zero-based index of the element to get or set.</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <para><paramref name="index"/> is less than zero</para>
+        /// <para>-or-</para>
+        /// <para><paramref name="index"/> is equal to or greater than <see cref="LevelCollection.Count"/>.</para>
+        /// </exception>
+        public virtual Level this[int index]
 		{
 			get
 			{

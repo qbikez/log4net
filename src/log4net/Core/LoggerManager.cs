@@ -18,7 +18,6 @@
 #endregion
 
 using System;
-using System.Configuration;
 using System.Reflection;
 
 using log4net.Util;
@@ -798,14 +797,21 @@ namespace log4net.Core
 		{
 			System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-			// Grab the currently executing assembly
-			Assembly myAssembly = Assembly.GetExecutingAssembly();
-
-			// Build Up message
-			sb.Append("log4net assembly [").Append(myAssembly.FullName).Append("]. ");
+#if !COREFX
+            // Grab the currently executing assembly
+            Assembly myAssembly = Assembly.GetExecutingAssembly();
+#else
+            Assembly myAssembly = Assembly.GetEntryAssembly();
+#endif
+            // Build Up message
+            sb.Append("log4net assembly [").Append(myAssembly.FullName).Append("]. ");
 			sb.Append("Loaded from [").Append(SystemInfo.AssemblyLocationInfo(myAssembly)).Append("]. ");
-			sb.Append("(.NET Runtime [").Append(Environment.Version.ToString()).Append("]");
-#if (!SSCLI)
+#if COREFX
+            sb.Append(" on ").Append(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.RuntimeFramework.Version.ToString()).Append("]");
+#else
+            sb.Append("(.NET Runtime [").Append(Environment.Version.ToString()).Append("]");
+#endif
+#if (!SSCLI && !COREFX)
             sb.Append(" on ").Append(Environment.OSVersion.ToString());
 #endif
             sb.Append(")");
@@ -850,9 +856,9 @@ namespace log4net.Core
 		}
 #endif
 
-		#endregion Private Static Methods
+#endregion Private Static Methods
 
-		#region Private Static Fields
+#region Private Static Fields
 
 	    /// <summary>
 	    /// The fully qualified type of the LoggerManager class.
@@ -868,6 +874,6 @@ namespace log4net.Core
 		/// </summary>
 		private static IRepositorySelector s_repositorySelector;
 
-		#endregion Private Static Fields
+#endregion Private Static Fields
 	}
 }

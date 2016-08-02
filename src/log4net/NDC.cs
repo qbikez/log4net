@@ -154,7 +154,7 @@ namespace log4net
 		/*[Obsolete("NDC has been replaced by ThreadContext.Stacks")]*/
 		public static Stack CloneStack() 
 		{
-			return ThreadContext.Stacks["NDC"].InternalStack;
+			return new Stack(ThreadContext.Stacks["NDC"].InternalStack);
 		}
 
 		/// <summary>

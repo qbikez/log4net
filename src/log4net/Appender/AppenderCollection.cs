@@ -219,20 +219,25 @@ namespace log4net.Appender
 		/// <returns>true if access to the ICollection is synchronized (thread-safe); otherwise, false.</returns>
 		public virtual bool IsSynchronized
 		{
-			get { return m_array.IsSynchronized; }
+			get {
+#if !COREFX
+                return m_array.IsSynchronized;
+#else 
+                return true;
+#endif
+            }
 		}
+/// <summary>
+        /// Gets an object that can be used to synchronize access to the collection.
+        /// </summary>
+        public virtual object SyncRoot
+        {
+            get { return m_array.GetSyncRoot(); }
+        }
 
-		/// <summary>
-		/// Gets an object that can be used to synchronize access to the collection.
-		/// </summary>
-		public virtual object SyncRoot
-		{
-			get { return m_array.SyncRoot; }
-		}
-
-		#endregion
+#endregion
 		
-		#region Operations (type-safe IList)
+#region Operations (type-safe IList)
 
 		/// <summary>
 		/// Gets or sets the <see cref="IAppender"/> at the specified index.
@@ -432,9 +437,9 @@ namespace log4net.Appender
 			get { return false; }
 		}
 
-		#endregion
+#endregion
 
-		#region Operations (type-safe IEnumerable)
+#region Operations (type-safe IEnumerable)
 		
 		/// <summary>
 		/// Returns an enumerator that can iterate through the <c>AppenderCollection</c>.
@@ -445,9 +450,9 @@ namespace log4net.Appender
 			return new Enumerator(this);
 		}
 
-		#endregion
+#endregion
 
-		#region Public helpers (just to mimic some nice features of ArrayList)
+#region Public helpers (just to mimic some nice features of ArrayList)
 		
 		/// <summary>
 		/// Gets or sets the number of elements the <c>AppenderCollection</c> can contain.
@@ -561,9 +566,9 @@ namespace log4net.Appender
 			return resultArray;
 		}
 
-		#endregion
+#endregion
 
-		#region Implementation (helpers)
+#region Implementation (helpers)
 
 		/// <exception cref="ArgumentOutOfRangeException">
 		/// <para><paramref name="i"/> is less than zero</para>
@@ -600,9 +605,9 @@ namespace log4net.Appender
 			this.Capacity = newCapacity;
 		}
 
-		#endregion
+#endregion
 		
-		#region Implementation (ICollection)
+#region Implementation (ICollection)
 
 		void ICollection.CopyTo(Array array, int start)
 		{
@@ -612,9 +617,9 @@ namespace log4net.Appender
 			}
 		}
 
-		#endregion
+#endregion
 
-		#region Implementation (IList)
+#region Implementation (IList)
 
 		object IList.this[int i]
 		{
@@ -652,18 +657,18 @@ namespace log4net.Appender
 			this.RemoveAt(pos);
 		}
 
-		#endregion
+#endregion
 
-		#region Implementation (IEnumerable)
+#region Implementation (IEnumerable)
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return (IEnumerator)(this.GetEnumerator());
 		}
 
-		#endregion
+#endregion
 
-		#region Nested enumerator class
+#region Nested enumerator class
 
 		/// <summary>
 		/// Supports simple iteration over a <see cref="AppenderCollection"/>.
@@ -671,15 +676,15 @@ namespace log4net.Appender
 		/// <exclude/>
 		private sealed class Enumerator : IEnumerator, IAppenderCollectionEnumerator
 		{
-			#region Implementation (data)
+#region Implementation (data)
 			
 			private readonly AppenderCollection m_collection;
 			private int m_index;
 			private int m_version;
 			
-			#endregion
+#endregion
 		
-			#region Construction
+#region Construction
 			
 			/// <summary>
 			/// Initializes a new instance of the <c>Enumerator</c> class.
@@ -692,9 +697,9 @@ namespace log4net.Appender
 				m_version = tc.m_version;
 			}
 			
-			#endregion
+#endregion
 	
-			#region Operations (type-safe IEnumerator)
+#region Operations (type-safe IEnumerator)
 			
 			/// <summary>
 			/// Gets the current element in the collection.
@@ -732,41 +737,41 @@ namespace log4net.Appender
 			{
 				m_index = -1;
 			}
-			#endregion
+#endregion
 	
-			#region Implementation (IEnumerator)
+#region Implementation (IEnumerator)
 			
 			object IEnumerator.Current
 			{
 				get { return this.Current; }
 			}
 			
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 
-		#region Nested Read Only Wrapper class
+#region Nested Read Only Wrapper class
 
 		/// <exclude/>
 		private sealed class ReadOnlyAppenderCollection : AppenderCollection, ICollection
 		{
-			#region Implementation (data)
+#region Implementation (data)
 
 			private readonly AppenderCollection m_collection;
 
-			#endregion
+#endregion
 
-			#region Construction
+#region Construction
 
 			internal ReadOnlyAppenderCollection(AppenderCollection list) : base(Tag.Default)
 			{
 				m_collection = list;
 			}
 
-			#endregion
+#endregion
 
-			#region Type-safe ICollection
+#region Type-safe ICollection
 
 			public override void CopyTo(IAppender[] array)
 			{
@@ -793,14 +798,13 @@ namespace log4net.Appender
 				get { return m_collection.IsSynchronized; }
 			}
 
-			public override object SyncRoot
+            public override object SyncRoot
 			{
 				get { return this.m_collection.SyncRoot; }
 			}
+#endregion
 
-			#endregion
-
-			#region Type-safe IList
+#region Type-safe IList
 
 			public override IAppender this[int i]
 			{
@@ -853,18 +857,18 @@ namespace log4net.Appender
 				get { return true; }
 			}
 
-			#endregion
+#endregion
 
-			#region Type-safe IEnumerable
+#region Type-safe IEnumerable
 
 			public override IAppenderCollectionEnumerator GetEnumerator()
 			{
 				return m_collection.GetEnumerator();
 			}
 
-			#endregion
+#endregion
 
-			#region Public Helpers
+#region Public Helpers
 
 			// (just to mimic some nice features of ArrayList)
 			public override int Capacity
@@ -893,10 +897,10 @@ namespace log4net.Appender
 				throw new NotSupportedException("This is a Read Only Collection and can not be modified");
 			}
 
-			#endregion
+#endregion
 		}
 
-		#endregion
+#endregion
 	}
 
 }

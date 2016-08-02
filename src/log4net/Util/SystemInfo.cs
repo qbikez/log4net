@@ -18,7 +18,6 @@
 #endregion
 
 using System;
-using System.Configuration;
 using System.Reflection;
 using System.Text;
 using System.IO;
@@ -258,9 +257,9 @@ namespace log4net.Util
 			{
 				if (s_hostName == null)
 				{
-
-					// Get the DNS host name of the current machine
-					try
+#if !COREFX
+                    // Get the DNS host name of the current machine
+                    try
 					{
 						// Lookup the host name
 						s_hostName = System.Net.Dns.GetHostName();
@@ -279,7 +278,7 @@ namespace log4net.Util
 					{
 						LogLog.Debug(declaringType, "Some other exception occurred while getting the dns hostname. Error Ignored.", ex);
 					}
-
+#endif
 					// Get the NETBIOS machine name of the current machine
 					if (s_hostName == null || s_hostName.Length == 0)
 					{
@@ -430,9 +429,9 @@ namespace log4net.Util
 			set { s_notAvailableText = value; }
 		}
 
-		#endregion Public Static Properties
+#endregion Public Static Properties
 
-		#region Public Static Methods
+#region Public Static Methods
 
 		/// <summary>
 		/// Gets the assembly location path for the specified assembly.
@@ -520,7 +519,7 @@ namespace log4net.Util
 		/// </remarks>
 		public static string AssemblyQualifiedName(Type type)
 		{
-			return type.FullName + ", " + type.Assembly.FullName;
+			return type.FullName + ", " + type.FullName;
 		}
 
 		/// <summary>
@@ -617,7 +616,7 @@ namespace log4net.Util
 		/// </remarks>
 		public static Type GetTypeFromString(Type relativeType, string typeName, bool throwOnError, bool ignoreCase)
 		{
-			return GetTypeFromString(relativeType.Assembly, typeName, throwOnError, ignoreCase);
+			return GetTypeFromString(relativeType.GetAssembly(), typeName, throwOnError, ignoreCase);
 		}
 
 		/// <summary>
@@ -1036,9 +1035,9 @@ namespace log4net.Util
 #endif
 		}
 
-		#endregion Public Static Methods
+#endregion Public Static Methods
 
-		#region Private Static Methods
+#region Private Static Methods
 
 #if NETCF
 		private static string NativeEntryAssemblyLocation 
@@ -1077,9 +1076,9 @@ namespace log4net.Util
 
 #endif
 
-		#endregion Private Static Methods
+#endregion Private Static Methods
 
-		#region Public Static Fields
+#region Public Static Fields
 
 		/// <summary>
 		/// Gets an empty array of types.
@@ -1092,9 +1091,9 @@ namespace log4net.Util
 		/// </remarks>
 		public static readonly Type[] EmptyTypes = new Type[0];
 
-		#endregion Public Static Fields
+#endregion Public Static Fields
 
-		#region Private Static Fields
+#region Private Static Fields
 
 	    /// <summary>
 	    /// The fully qualified type of the SystemInfo class.
@@ -1130,9 +1129,9 @@ namespace log4net.Util
 		/// </summary>
 		private static DateTime s_processStartTime = DateTime.Now;
 
-		#endregion
+#endregion
 
-		#region Compact Framework Helper Classes
+#region Compact Framework Helper Classes
 #if NETCF_1_0
 		/// <summary>
 		/// Generate GUIDs on the .NET Compact Framework.
@@ -1251,6 +1250,6 @@ namespace log4net.Util
 			}
 		}
 #endif
-		#endregion Compact Framework Helper Classes
+#endregion Compact Framework Helper Classes
 	}
 }

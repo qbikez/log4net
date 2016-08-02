@@ -183,7 +183,7 @@ namespace log4net.Util
 		override public void Close()
 		{
 			m_closed = true;
-			base.Close();
+            base.Close();
 		}
 
 		#endregion Public Instance Methods

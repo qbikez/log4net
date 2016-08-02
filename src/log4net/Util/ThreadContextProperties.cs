@@ -38,7 +38,7 @@ namespace log4net.Util
 	{
 		#region Private Instance Fields
 
-#if NETCF
+#if NETCF && !COREFX
 		/// <summary>
 		/// The thread local data slot to use to store a PropertiesDictionary.
 		/// </summary>
@@ -181,13 +181,13 @@ namespace log4net.Util
 		/// </remarks>
 		internal PropertiesDictionary GetProperties(bool create)
 		{
-#if NETCF
+#if NETCF && !COREFX
 			PropertiesDictionary _dictionary = (PropertiesDictionary)System.Threading.Thread.GetData(s_threadLocalSlot);
 #endif
 			if (_dictionary == null && create)
 			{
 				_dictionary  = new PropertiesDictionary();
-#if NETCF
+#if NETCF && !COREFX
 				System.Threading.Thread.SetData(s_threadLocalSlot, _dictionary);
 #endif
 			}

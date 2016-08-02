@@ -18,10 +18,12 @@
 #endregion
 
 // .NET Compact Framework 1.0 has no support for System.Runtime.Remoting.Messaging.CallContext
-#if !NETCF
+#if !NETCF 
 
 using System;
+#if !COREFX
 using System.Runtime.Remoting.Messaging;
+#endif
 using System.Security;
 
 namespace log4net.Util
@@ -56,7 +58,7 @@ namespace log4net.Util
 		/// </summary>
 		private bool m_disabled = false;
 		
-		#region Public Instance Constructors
+#region Public Instance Constructors
 
 		/// <summary>
 		/// Constructor
@@ -70,22 +72,23 @@ namespace log4net.Util
 		{
 		}
 
-		#endregion Public Instance Constructors
+        #endregion Public Instance Constructors
 
-		#region Public Instance Properties
+#region Public Instance Properties
 
-		/// <summary>
-		/// Gets or sets the value of a property
-		/// </summary>
-		/// <value>
-		/// The value for the property with the specified key
-		/// </value>
-		/// <remarks>
-		/// <para>
-		/// Get or set the property value for the <paramref name="key"/> specified.
-		/// </para>
-		/// </remarks>
-		override public object this[string key]
+#if !COREFX
+        /// <summary>
+        /// Gets or sets the value of a property
+        /// </summary>
+        /// <value>
+        /// The value for the property with the specified key
+        /// </value>
+        /// <remarks>
+        /// <para>
+        /// Get or set the property value for the <paramref name="key"/> specified.
+        /// </para>
+        /// </remarks>
+        override public object this[string key]
 		{
 			get 
 			{ 
@@ -108,10 +111,11 @@ namespace log4net.Util
 				SetCallContextData(immutableProps);
 			}
 		}
+#endif
 
-		#endregion Public Instance Properties
+#endregion Public Instance Properties
 
-		#region Public Instance Methods
+#region Public Instance Methods
 
 		/// <summary>
 		/// Remove a property
@@ -151,9 +155,9 @@ namespace log4net.Util
 			}
 		}
 
-		#endregion Public Instance Methods
+#endregion Public Instance Methods
 
-		#region Internal Instance Methods
+#region Internal Instance Methods
 
 		/// <summary>
 		/// Get the PropertiesDictionary stored in the LocalDataStoreSlot for this thread.
@@ -198,19 +202,20 @@ namespace log4net.Util
 			return null;
 		}
 
-		#endregion Internal Instance Methods
+#endregion Internal Instance Methods
 
-        #region Private Static Methods
+#region Private Static Methods
 
-        /// <summary>
-		/// Gets the call context get data.
-		/// </summary>
-		/// <returns>The peroperties dictionary stored in the call context</returns>
-		/// <remarks>
-		/// The <see cref="CallContext"/> method <see cref="CallContext.GetData"/> has a
-		/// security link demand, therfore we must put the method call in a seperate method
-		/// that we can wrap in an exception handler.
-		/// </remarks>
+/// <summary>
+/// Gets the call context get data.
+/// </summary>
+/// <returns>The peroperties dictionary stored in the call context</returns>
+/// <remarks>
+/// The <see cref="CallContext"/> method <see cref="CallContext.GetData"/> has a
+/// security link demand, therfore we must put the method call in a seperate method
+/// that we can wrap in an exception handler.
+/// </remarks>
+#if !COREFX
 #if NET_4_0 || MONO_4_0
         [System.Security.SecuritySafeCritical]
 #endif
@@ -221,17 +226,21 @@ namespace log4net.Util
 #else
 			return CallContext.GetData(c_SlotName) as PropertiesDictionary;
 #endif
-		}
 
-		/// <summary>
-		/// Sets the call context data.
-		/// </summary>
-		/// <param name="properties">The properties.</param>
-		/// <remarks>
-		/// The <see cref="CallContext"/> method <see cref="CallContext.SetData"/> has a
-		/// security link demand, therfore we must put the method call in a seperate method
-		/// that we can wrap in an exception handler.
-		/// </remarks>
+		}
+#endif
+
+/// <summary>
+/// Sets the call context data.
+/// </summary>
+/// <param name="properties">The properties.</param>
+/// <remarks>
+/// The <see cref="CallContext"/> method <see cref="CallContext.SetData"/> has a
+/// security link demand, therfore we must put the method call in a seperate method
+/// that we can wrap in an exception handler.
+/// </remarks>
+
+#if !COREFX
 #if NET_4_0 || MONO_4_0
         [System.Security.SecuritySafeCritical]
 #endif
@@ -243,10 +252,11 @@ namespace log4net.Util
 			CallContext.SetData(c_SlotName, properties);
 #endif
         }
+#endif
 
-        #endregion
+#endregion
 
-	    #region Private Static Fields
+#region Private Static Fields
 
 	    /// <summary>
 	    /// The fully qualified type of the LogicalThreadContextProperties class.
@@ -257,7 +267,7 @@ namespace log4net.Util
 	    /// </remarks>
 	    private readonly static Type declaringType = typeof(LogicalThreadContextProperties);
 
-	    #endregion Private Static Fields
+#endregion Private Static Fields
     }
 }
 

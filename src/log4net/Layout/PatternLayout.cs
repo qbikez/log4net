@@ -20,7 +20,7 @@
 using System;
 using System.Collections;
 using System.IO;
-
+using System.Reflection;
 using log4net.Core;
 using log4net.Layout.Pattern;
 using log4net.Util;
@@ -1024,7 +1024,7 @@ namespace log4net.Layout
 			PatternParser patternParser = new PatternParser(pattern);
 
 			// Add all the builtin patterns
-			foreach(DictionaryEntry entry in s_globalRulesRegistry)
+			foreach(var entry in s_globalRulesRegistry)
 			{
                 ConverterInfo converterInfo = new ConverterInfo();
                 converterInfo.Name = (string)entry.Key;
@@ -1032,7 +1032,7 @@ namespace log4net.Layout
                 patternParser.PatternConverters[entry.Key] = converterInfo;
 			}
 			// Add the instance patterns
-			foreach(DictionaryEntry entry in m_instanceRulesRegistry)
+			foreach(var entry in m_instanceRulesRegistry)
 			{
 				patternParser.PatternConverters[entry.Key] = entry.Value;
 			}

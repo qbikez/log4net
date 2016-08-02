@@ -24,6 +24,7 @@ using System.Threading;
 using log4net.Util;
 using log4net.Layout;
 using log4net.Core;
+using System.Threading.Tasks;
 
 namespace log4net.Appender
 {
@@ -158,10 +159,11 @@ namespace log4net.Appender
 				m_lockingModel = locking;
 			}
 
-			#region Override Implementation of Stream
+            #region Override Implementation of Stream
 
-			// Methods
-			public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
+#if !COREFX
+            // Methods
+            public override IAsyncResult BeginRead(byte[] buffer, int offset, int count, AsyncCallback callback, object state)
 			{
 				AssertLocked();
 				IAsyncResult ret = m_realStream.BeginRead(buffer, offset, count, callback, state);
@@ -180,21 +182,48 @@ namespace log4net.Appender
 				return ret;
 			}
 
+
 			public override void Close()
 			{
 				m_lockingModel.CloseFile();
 			}
+
 
 			public override int EndRead(IAsyncResult asyncResult)
 			{
 				AssertLocked();
 				return m_readTotal;
 			}
+
 			public override void EndWrite(IAsyncResult asyncResult)
 			{
 				//No-op, it has already been handled
 			}
-			public override void Flush()
+#else
+            public override async Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+            {
+                AssertLocked();
+                await base.WriteAsync(buffer, offset, count, cancellationToken);
+            }
+
+            public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+            {
+                AssertLocked();
+                var read = await base.ReadAsync(buffer, offset, count, cancellationToken);
+                AssertLocked();
+                return read;
+            }
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    m_lockingModel.CloseFile();
+                }
+                //base.Dispose(disposing);
+            }
+#endif
+            public override void Flush()
 			{
 				AssertLocked();
 				m_realStream.Flush();
@@ -219,8 +248,13 @@ namespace log4net.Appender
 			}
 			void IDisposable.Dispose()
 			{
-				Close();
+#if COREFX
+                this.Dispose();
+#else
+                Close();
+#endif
 			}
+
 			public override void Write(byte[] buffer, int offset, int count)
 			{
 				AssertLocked();
@@ -275,9 +309,9 @@ namespace log4net.Appender
 				}
 			}
 
-			#endregion Override Implementation of Stream
+#endregion Override Implementation of Stream
 
-			#region Locking Methods
+#region Locking Methods
 
 			private void AssertLocked()
 			{
@@ -320,12 +354,12 @@ namespace log4net.Appender
 				}
 			}
 
-			#endregion Locking Methods
+#endregion Locking Methods
 		}
 
-		#endregion LockingStream Inner Class
+#endregion LockingStream Inner Class
 
-		#region Locking Models
+#region Locking Models
 
 		/// <summary>
 		/// Locking model base class
@@ -470,8 +504,12 @@ namespace log4net.Appender
 			{
 				using (CurrentAppender.SecurityContext.Impersonate(this))
 				{
-					stream.Close();
-				}
+#if !COREFX
+                    stream.Close();
+#else
+                    stream.Dispose();
+#endif
+                }
 			}
 		}
 
@@ -840,9 +878,9 @@ namespace log4net.Appender
 		}
 #endif
 
-		#endregion Locking Models
+#endregion Locking Models
 
-		#region Public Instance Constructors
+#region Public Instance Constructors
 
 		/// <summary>
 		/// Default constructor
@@ -893,9 +931,9 @@ namespace log4net.Appender
 		{
 		}
 
-		#endregion Public Instance Constructors
+#endregion Public Instance Constructors
 
-		#region Public Instance Properties
+#region Public Instance Properties
 
 		/// <summary>
 		/// Gets or sets the path to the file that logging will be written to.
@@ -1022,9 +1060,9 @@ namespace log4net.Appender
 			set { m_lockingModel = value; }
 		}
 
-		#endregion Public Instance Properties
+#endregion Public Instance Properties
 
-		#region Override implementation of AppenderSkeleton
+#region Override implementation of AppenderSkeleton
 
 		/// <summary>
 		/// Activate the options on the file appender. 
@@ -1077,9 +1115,9 @@ namespace log4net.Appender
 			}
 		}
 
-		#endregion Override implementation of AppenderSkeleton
+#endregion Override implementation of AppenderSkeleton
 
-		#region Override implementation of TextWriterAppender
+#region Override implementation of TextWriterAppender
 
 		/// <summary>
 		/// Closes any previously opened file and calls the parent's <see cref="TextWriterAppender.Reset"/>.
@@ -1248,9 +1286,9 @@ namespace log4net.Appender
 			}
 		}
 
-		#endregion Override implementation of TextWriterAppender
+#endregion Override implementation of TextWriterAppender
 
-		#region Public Instance Methods
+#region Public Instance Methods
 
 		/// <summary>
 		/// Closes the previously opened file.
@@ -1266,9 +1304,9 @@ namespace log4net.Appender
 			WriteFooterAndCloseWriter();
 		}
 
-		#endregion Public Instance Methods
+#endregion Public Instance Methods
 
-		#region Protected Instance Methods
+#region Protected Instance Methods
 
 		/// <summary>
 		/// Sets and <i>opens</i> the file where the log output will go. The specified file must be writable.
@@ -1391,9 +1429,9 @@ namespace log4net.Appender
 			QuietWriter = new QuietTextWriter(writer, ErrorHandler);
 		}
 
-		#endregion Protected Instance Methods
+#endregion Protected Instance Methods
 
-		#region Protected Static Methods
+#region Protected Static Methods
 
 		/// <summary>
 		/// Convert a path into a fully qualified path.
@@ -1413,9 +1451,9 @@ namespace log4net.Appender
 			return SystemInfo.ConvertToFullPath(path);
 		}
 
-		#endregion Protected Static Methods
+#endregion Protected Static Methods
 
-		#region Private Instance Fields
+#region Private Instance Fields
 
 		/// <summary>
 		/// Flag to indicate if we should append to the file
@@ -1428,15 +1466,19 @@ namespace log4net.Appender
 		/// </summary>
 		private string m_fileName = null;
 
-		/// <summary>
-		/// The encoding to use for the file stream.
-		/// </summary>
-		private Encoding m_encoding = Encoding.Default;
-
-		/// <summary>
-		/// The security context to use for privileged calls
-		/// </summary>
-		private SecurityContext m_securityContext;
+        /// <summary>
+        /// The encoding to use for the file stream.
+        /// </summary>
+        private Encoding m_encoding =
+#if !COREFX
+            Encoding.Default;
+#else
+            Encoding.UTF8;
+#endif
+        /// <summary>
+        /// The security context to use for privileged calls
+        /// </summary>
+        private SecurityContext m_securityContext;
 
 		/// <summary>
 		/// The stream to log to. Has added locking semantics
@@ -1448,9 +1490,9 @@ namespace log4net.Appender
 		/// </summary>
 		private FileAppender.LockingModelBase m_lockingModel = new FileAppender.ExclusiveLock();
 
-		#endregion Private Instance Fields
+#endregion Private Instance Fields
 
-		#region Private Static Fields
+#region Private Static Fields
 
 		/// <summary>
 		/// The fully qualified type of the FileAppender class.
@@ -1461,6 +1503,6 @@ namespace log4net.Appender
 		/// </remarks>
 		private readonly static Type declaringType = typeof(FileAppender);
 
-		#endregion Private Static Fields
+#endregion Private Static Fields
 	}
 }

@@ -1,7 +1,7 @@
 {
   "version": "1.0.0-*",
   "buildOptions": {
-    "debugType": "portable"
+    "debugType": "full"
   },
   "dependencies": {
     "System.Runtime.Serialization.Primitives": "4.1.1",
@@ -10,11 +10,17 @@
     "dotnet-test-nunit": "3.4.0-beta-1",
     "log4net": {
       "target": "project"
-    },
-    "System.Xml.XmlDocument": "4.0.1"
+    }
   },
   "testRunner": "nunit",
   "frameworks": {
+    "net451": {
+      "buildOptions": {
+        "define": [ "NOXML", "NOASP" ]
+      }
+    }
+  },
+  "//frameworks": {
     "netcoreapp1.0": {
       "buildOptions": {
         "define": [ "COREFX" ]
@@ -23,12 +29,14 @@
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.0.0"
-        }
+        },
+        "System.Xml.XmlDocument": "4.0.1"
       },
       "imports": [
         "dotnet5.4",
         "portable-net451+win8"
       ]
     }
+
   }
 }

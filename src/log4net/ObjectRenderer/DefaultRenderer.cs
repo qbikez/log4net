@@ -26,20 +26,26 @@ using log4net.Util;
 
 namespace log4net.ObjectRenderer
 {
-	/// <summary>
-	/// The default object Renderer.
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// The default renderer supports rendering objects and collections to strings.
-	/// </para>
-	/// <para>
-	/// See the <see cref="RenderObject"/> method for details of the output.
-	/// </para>
-	/// </remarks>
-	/// <author>Nicko Cadell</author>
-	/// <author>Gert Driesen</author>
-	public sealed class DefaultRenderer : IObjectRenderer
+#if COREFX
+    using Entry = System.Collections.Generic.KeyValuePair<object, object>;
+#else
+    using Entry = DictionaryEntry;
+#endif
+
+    /// <summary>
+    /// The default object Renderer.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// The default renderer supports rendering objects and collections to strings.
+    /// </para>
+    /// <para>
+    /// See the <see cref="RenderObject"/> method for details of the output.
+    /// </para>
+    /// </remarks>
+    /// <author>Nicko Cadell</author>
+    /// <author>Gert Driesen</author>
+    public sealed class DefaultRenderer : IObjectRenderer
 	{
 		#region Constructors
 
@@ -201,9 +207,9 @@ namespace log4net.ObjectRenderer
 				return;
 			}
 			
-			if (obj is DictionaryEntry)
+			if (obj is Entry)
 			{
-				RenderDictionaryEntry(rendererMap, (DictionaryEntry)obj, writer);
+				RenderDictionaryEntry(rendererMap, (Entry)obj, writer);
 				return;
 			}
 
@@ -300,7 +306,7 @@ namespace log4net.ObjectRenderer
 		///	renderer). For example: <c>key=value</c>.
 		///	</para>
 		/// </remarks>
-		private void RenderDictionaryEntry(RendererMap rendererMap, DictionaryEntry entry, TextWriter writer)
+		private void RenderDictionaryEntry(RendererMap rendererMap, Entry entry, TextWriter writer)
 		{
 			rendererMap.FindAndRender(entry.Key, writer);
 			writer.Write("=");

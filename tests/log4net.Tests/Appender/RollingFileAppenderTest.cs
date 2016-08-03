@@ -1473,6 +1473,7 @@ namespace log4net.Tests.Appender
 		public void TestLogOutput()
 		{
 			String filename = "test.log";
+            if (File.Exists(filename)) File.Delete(filename);
 			SilentErrorHandler sh = new SilentErrorHandler();
 			ILogger log = CreateLogger(filename, new FileAppender.ExclusiveLock(), sh);
 			log.Log(GetType(), Level.Info, "This is a message", null);

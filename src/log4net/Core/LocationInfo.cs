@@ -83,16 +83,31 @@ namespace log4net.Core
 			m_methodName = NA;
 			m_fullInfo = NA;
 
-#if !NETCF && !COREFX
+#if !NETCF && COREFX
 			if (callerStackBoundaryDeclaringType != null)
 			{
 				try
 				{
-					StackTrace st = new StackTrace(true);
-					int frameIndex = 0;
+#if COREFX
+                    // TODO: https://github.com/dotnet/corefx/issues/1797 and https://github.com/dotnet/coreclr/issues/6029
+                    var stack = Environment.StackTrace;
+                    Exception exc = null;
+                    try
+                    {
+                        throw new Exception();
+                    } catch (Exception ex)
+                    {
+                        exc = ex;
+                        var st1 = new StackTrace(exc, true);
+                    }
+                    StackTrace st = new StackTrace(exc, true);
+#else
+                    StackTrace st = new StackTrace(true);
+#endif
+                    int frameIndex = 0;
 																				
 					// skip frames not from fqnOfCallingClass
-					while (frameIndex < st.FrameCount)
+					while (frameIndex < st.FrameCount())
 					{
 						StackFrame frame = st.GetFrame(frameIndex);
 						if (frame != null && frame.GetMethod().DeclaringType == callerStackBoundaryDeclaringType)
@@ -103,7 +118,7 @@ namespace log4net.Core
 					}
 
 					// skip frames from fqnOfCallingClass
-					while (frameIndex < st.FrameCount)
+					while (frameIndex < st.FrameCount())
 					{
 						StackFrame frame = st.GetFrame(frameIndex);
 						if (frame != null && frame.GetMethod().DeclaringType != callerStackBoundaryDeclaringType)
@@ -113,13 +128,13 @@ namespace log4net.Core
 						frameIndex++;
 					}
 
-					if (frameIndex < st.FrameCount)
+					if (frameIndex < st.FrameCount())
 					{
 						// take into account the frames we skip above
-						int adjustedFrameCount = st.FrameCount - frameIndex;
+						int adjustedFrameCount = st.FrameCount() - frameIndex;
                         ArrayList stackFramesList = new ArrayList(adjustedFrameCount);
 						m_stackFrames = new StackFrameItem[adjustedFrameCount];
-						for (int i=frameIndex; i < st.FrameCount; i++) 
+						for (int i=frameIndex; i < st.FrameCount(); i++) 
 						{
 							stackFramesList.Add(new StackFrameItem(st.GetFrame(i)));
 						}
@@ -157,7 +172,7 @@ namespace log4net.Core
 				}
 			}
 #endif
-		}
+                }
 
 		/// <summary>
 		/// Constructor

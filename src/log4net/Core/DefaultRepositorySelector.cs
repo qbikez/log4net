@@ -747,7 +747,7 @@ namespace log4net.Core
 						{
                             LogLog.Error(declaringType, "DefaultRepositorySelector: Exception while parsing log4net.Config file physical path [" + repositoryConfigFilePath + "]", ex);
 						}
-#if !COREFX
+#if !NOXML
                         try
 						{
                             LogLog.Debug(declaringType, "Loading and watching configuration for default repository from AppSettings specified Config path [" + repositoryConfigFilePath + "]");
@@ -773,7 +773,7 @@ namespace log4net.Core
 					{
 						LogLog.Error(declaringType, "Exception while parsing log4net.Config file path ["+repositoryConfigFile+"]", ex);
 					}
-#if !COREFX
+#if !NOXML
                         if (repositoryConfigUri != null)
 					{
 						LogLog.Debug(declaringType, "Loading configuration for default repository from AppSettings specified Config URI ["+repositoryConfigUri.ToString()+"]");

@@ -954,9 +954,9 @@ namespace log4net.Util
 #if NETCF || COREFX
 				// Configuration APIs are not suported under the Compact Framework
 #elif NET_2_0
-				return ConfigurationManager.AppSettings[key];
+				return System.Configuration.ConfigurationManager.AppSettings[key];
 #else
-				return ConfigurationSettings.AppSettings[key];
+				return System.Configuration.ConfigurationSettings.AppSettings[key];
 #endif
 			}
 			catch(Exception ex)

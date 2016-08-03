@@ -30,16 +30,22 @@ using log4net.Repository;
 
 namespace log4net.Core
 {
-	/// <summary>
-	/// Portable data structure used by <see cref="LoggingEvent"/>
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Portable data structure used by <see cref="LoggingEvent"/>
-	/// </para>
-	/// </remarks>
-	/// <author>Nicko Cadell</author>
-	public struct LoggingEventData
+#if COREFX
+    using Entry = System.Collections.Generic.KeyValuePair<object, object>;
+#else
+    using Entry = DictionaryEntry;
+#endif
+
+    /// <summary>
+    /// Portable data structure used by <see cref="LoggingEvent"/>
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Portable data structure used by <see cref="LoggingEvent"/>
+    /// </para>
+    /// </remarks>
+    /// <author>Nicko Cadell</author>
+    public struct LoggingEventData
 	{
 		#region Public Instance Fields
 
@@ -1358,7 +1364,7 @@ namespace log4net.Core
 				PropertiesDictionary fixedProperties = new PropertiesDictionary();
 
 				// Validate properties
-				foreach(DictionaryEntry entry in flattenedProperties)
+				foreach(Entry entry in flattenedProperties)
 				{
 					string key = entry.Key as string;
 

@@ -102,6 +102,9 @@ namespace log4net.Tests.Layout
         [Test]
         public void TestStackTracePattern()
         {
+#if COREFX
+            Assert.Inconclusive("stacktrace not working in corefx");
+#endif
             StringAppender stringAppender = new StringAppender();
             stringAppender.Layout = NewPatternLayout("%stacktrace{2}");
 

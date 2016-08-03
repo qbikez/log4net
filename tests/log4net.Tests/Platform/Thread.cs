@@ -12,11 +12,19 @@ namespace System.Threading
         {
             get
             {
+#if COREFX
                 return CultureInfo.CurrentCulture;
+#else
+                return Thread.CurrentThread.CurrentCulture;
+#endif
             }
             set
             {
+#if COREFX
                 CultureInfo.CurrentCulture = value;
+#else
+                Thread.CurrentThread.CurrentCulture = value;
+#endif
             }
         }
 
@@ -24,12 +32,21 @@ namespace System.Threading
         {
             get
             {
+#if COREFX
                 return CultureInfo.CurrentUICulture;
+#else
+                return Thread.CurrentThread.CurrentUICulture;
+#endif
             }
             set
             {
+#if COREFX
                 CultureInfo.CurrentUICulture = value;
+#else
+                Thread.CurrentThread.CurrentUICulture = value;
+#endif
             }
         }
+
+    }
         }
-}

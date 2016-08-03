@@ -22,17 +22,23 @@ using System.Collections;
 
 namespace log4net.Util
 {
-	/// <summary>
-	/// This class aggregates several PropertiesDictionary collections together.
-	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Provides a dictionary style lookup over an ordered list of
-	/// <see cref="PropertiesDictionary"/> collections.
-	/// </para>
-	/// </remarks>
-	/// <author>Nicko Cadell</author>
-	public sealed class CompositeProperties
+#if COREFX
+    using Entry = System.Collections.Generic.KeyValuePair<object, object>;
+#else
+    using Entry = DictionaryEntry;
+#endif
+
+    /// <summary>
+    /// This class aggregates several PropertiesDictionary collections together.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Provides a dictionary style lookup over an ordered list of
+    /// <see cref="PropertiesDictionary"/> collections.
+    /// </para>
+    /// </remarks>
+    /// <author>Nicko Cadell</author>
+    public sealed class CompositeProperties
 	{
 		#region Private Instance Fields
 
@@ -140,7 +146,7 @@ namespace log4net.Util
 				{
 					ReadOnlyPropertiesDictionary cur = (ReadOnlyPropertiesDictionary)m_nestedProperties[i];
 
-					foreach(DictionaryEntry entry in cur)
+					foreach(Entry entry in cur)
 					{
 						m_flattened[(string)entry.Key] = entry.Value;
 					}

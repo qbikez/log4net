@@ -8,15 +8,18 @@ namespace System.Collections
 {
     public static class CollectionExtensions
     {
+#if COREFX
        
         public static object GetSyncRoot<T>(this ICollection<T> collection)
         {
-#if !COREFX
-			return collection.SyncRoot; 
-#else
-            return collection;
-#endif
+			return collection; 
         }
+#else
+        public static object GetSyncRoot(this ICollection collection)
+        {
+			return collection.SyncRoot; 
+        }
+#endif
 
 
         public static bool IsArraySynchronized(this Array array)
@@ -60,7 +63,11 @@ namespace System.Collections.Specialized
     {
         public static Hashtable CreateCaseInsensitiveHashtable()
         {
+#if COREFX
             return new CaseInsensitiveHashtable();
+#else
+            return System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();
+#endif
         }
     }
 }

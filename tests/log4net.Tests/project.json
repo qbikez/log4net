@@ -14,6 +14,23 @@
   },
   "testRunner": "nunit",
   "frameworks": {
+
+    "netcoreapp1.0": {
+      "buildOptions": {
+        "define": [ "COREFX" ]
+      },
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        },
+        "System.Xml.XmlDocument": "4.0.1"
+      },
+      "imports": [
+        "dotnet5.4",
+        "portable-net451+win8"
+      ]
+    },
     "net451": {
       "buildOptions": {
         "define": [ "NOXML", "NOASP" ]
@@ -21,6 +38,11 @@
     }
   },
   "//frameworks": {
+    "net451": {
+      "buildOptions": {
+        "define": [ "NOXML", "NOASP" ]
+      }
+    },
     "netcoreapp1.0": {
       "buildOptions": {
         "define": [ "COREFX" ]

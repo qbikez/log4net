@@ -1030,7 +1030,7 @@ namespace log4net.Util
 		{
 #if NETCF_1_0
 			return new Hashtable(CaseInsensitiveHashCodeProvider.Default, CaseInsensitiveComparer.Default);
-#elif NETCF_2_0 || NET_2_0 || MONO_2_0 || MONO_3_5 || MONO_4_0
+#elif (NETCF_2_0 || NET_2_0 || MONO_2_0 || MONO_3_5 || MONO_4_0) && !COREFX
 			return new Hashtable(StringComparer.OrdinalIgnoreCase);
 #else
 			return System.Collections.Specialized.CollectionsUtil.CreateCaseInsensitiveHashtable();

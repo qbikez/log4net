@@ -39,7 +39,7 @@ using System.Runtime.CompilerServices;
 [assembly: System.Security.AllowPartiallyTrustedCallers]
 #endif
 
-#if (NET_4_0)
+#if (NET_4_0 && !COREFX)
 //
 // Allows partial trust applications (e.g. ASP.NET shared hosting) on .NET 4.0 to work
 // given our implementation of ISerializable.

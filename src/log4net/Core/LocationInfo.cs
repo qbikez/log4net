@@ -83,7 +83,7 @@ namespace log4net.Core
 			m_methodName = NA;
 			m_fullInfo = NA;
 
-#if !NETCF && COREFX
+#if !NETCF && !COREFX
 			if (callerStackBoundaryDeclaringType != null)
 			{
 				try

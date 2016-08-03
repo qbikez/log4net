@@ -152,7 +152,7 @@ namespace log4net.Tests.Appender
 		/// <param name="iFileNumber"></param>
 		private static void CreateFile(int iFileNumber)
 		{
-			FileInfo fileInfo = new FileInfo(MakeFileName(c_fileName, iFileNumber));
+			FileInfo fileInfo = new FileInfo(MakeFileName(SystemInfo.ConvertToFullPath(c_fileName), iFileNumber));
 
 			FileStream fileStream = null;
 			try
@@ -198,7 +198,7 @@ namespace log4net.Tests.Appender
 				try
 				{
 					Debug.WriteLine("Deleting test file " + sFile);
-					File.Delete(sFile);
+					File.Delete(SystemInfo.ConvertToFullPath(sFile));
 				}
 				catch(Exception ex)
 				{
@@ -281,6 +281,7 @@ namespace log4net.Tests.Appender
 		/// </summary>
 		public class RollFileEntry
 		{
+            public string FullName => SystemInfo.ConvertToFullPath(m_fileName);
 			/// <summary>
 			/// Stores the name of the file
 			/// </summary>
@@ -397,7 +398,7 @@ namespace log4net.Tests.Appender
 				foreach(RollFileEntry rollFile in fileEntries)
 				{
 					string sFileName = rollFile.FileName;
-					FileInfo file = new FileInfo(sFileName);
+					FileInfo file = new FileInfo(rollFile.FullName);
 
 					if (rollFile.FileLength > 0)
 					{
@@ -423,7 +424,7 @@ namespace log4net.Tests.Appender
 
 			// This check ensures no extra files matching the wildcard pattern exist.
 			// We only want the files we expect, and no others
-			Assert.AreEqual(0, alExisting.Count);
+			 Assert.AreEqual(0, alExisting.Count);
 		}
 
 		/// <summary>
@@ -1454,7 +1455,8 @@ namespace log4net.Tests.Appender
 
 		private static void AssertFileEquals(string filename, string contents)
 		{
-			StreamReader sr = new StreamReader(new FileStream(filename, FileMode.Open));
+            filename = SystemInfo.ConvertToFullPath(filename);
+            StreamReader sr = new StreamReader(CreateFileStream(filename, FileMode.Open));
 			string logcont = sr.ReadToEnd();
 #if COREFX
             sr.Dispose();
@@ -1472,6 +1474,7 @@ namespace log4net.Tests.Appender
 		[Test]
 		public void TestLogOutput()
 		{
+            LogLog.InternalDebugging = true;
 			String filename = "test.log";
             if (File.Exists(filename)) File.Delete(filename);
 			SilentErrorHandler sh = new SilentErrorHandler();
@@ -1492,7 +1495,7 @@ namespace log4net.Tests.Appender
 		{
 			String filename = "test.log";
 
-			FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+			FileStream fs = CreateFileStream(SystemInfo.ConvertToFullPath(filename), FileMode.Create, FileAccess.Write, FileShare.None);
 			fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
 			SilentErrorHandler sh = new SilentErrorHandler();
@@ -1514,7 +1517,7 @@ namespace log4net.Tests.Appender
 		{
 			String filename = "test.log";
 
-			FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+			FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 			fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
 			SilentErrorHandler sh = new SilentErrorHandler();
@@ -1543,7 +1546,7 @@ namespace log4net.Tests.Appender
 
 			try
 			{
-				FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+				FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 				fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 				fs.Close();
 			}
@@ -1567,16 +1570,25 @@ namespace log4net.Tests.Appender
 			Assert.AreEqual("", sh.Message, "Unexpected error message");
 		}
 
+        private static FileStream CreateFileStream(string filename, FileMode mode, FileAccess access, FileShare share)
+        {
+            return new FileStream(SystemInfo.ConvertToFullPath(filename), mode, access, share);
+        }
+        private static FileStream CreateFileStream(string filename, FileMode mode)
+        {
+            return new FileStream(SystemInfo.ConvertToFullPath(filename), mode);
+        }
 
-		/// <summary>
-		/// Verifies that attempting to log to a locked file fails gracefully
-		/// </summary>
-		[Test]
+
+        /// <summary>
+        /// Verifies that attempting to log to a locked file fails gracefully
+        /// </summary>
+        [Test]
 		public void TestMinimalLockFails()
 		{
 			String filename = "test.log";
 
-			FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+			FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 			fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
 			SilentErrorHandler sh = new SilentErrorHandler();
@@ -1598,7 +1610,7 @@ namespace log4net.Tests.Appender
 		{
 			String filename = "test.log";
 
-			FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+			FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
 			fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
 			SilentErrorHandler sh = new SilentErrorHandler();
@@ -1626,7 +1638,7 @@ namespace log4net.Tests.Appender
 			log.Log(GetType(), Level.Info, "This is a message", null);
 
 			locked = true;
-			FileStream fs = new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None);
+			FileStream fs = CreateFileStream(filename, FileMode.Append, FileAccess.Write, FileShare.None);
 			fs.Write(Encoding.ASCII.GetBytes("Test" + Environment.NewLine), 0, 4 + Environment.NewLine.Length);
 			fs.Close();
 
@@ -1646,7 +1658,7 @@ namespace log4net.Tests.Appender
         public void TestInterProcessLockFails() {
             String filename = "test.log";
 
-            FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+            FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
             fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
             SilentErrorHandler sh = new SilentErrorHandler();
@@ -1667,7 +1679,7 @@ namespace log4net.Tests.Appender
         public void TestInterProcessLockRecovers() {
             String filename = "test.log";
 
-            FileStream fs = new FileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
+            FileStream fs = CreateFileStream(filename, FileMode.Create, FileAccess.Write, FileShare.None);
             fs.Write(Encoding.ASCII.GetBytes("Test"), 0, 4);
 
             SilentErrorHandler sh = new SilentErrorHandler();
@@ -1694,7 +1706,7 @@ namespace log4net.Tests.Appender
             log.Log(GetType(), Level.Info, "This is a message", null);
 
             locked = true;
-            FileStream fs = new FileStream(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
+            FileStream fs = CreateFileStream(filename, FileMode.Append, FileAccess.Write, FileShare.ReadWrite);
             fs.Write(Encoding.ASCII.GetBytes("Test" + Environment.NewLine), 0, 4 + Environment.NewLine.Length);
             fs.Close();
 

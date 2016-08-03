@@ -751,7 +751,7 @@ namespace log4net.Appender
 
 			using(SecurityContext.Impersonate(this))
 			{
-				fullPath = System.IO.Path.GetFullPath(m_baseFileName);
+				fullPath = SystemInfo.ConvertToFullPath(m_baseFileName);
 				fileName = System.IO.Path.GetFileName(fullPath);
 			}
 
@@ -793,7 +793,7 @@ namespace log4net.Appender
 
 			using(SecurityContext.Impersonate(this))
 			{
-				string fullPath = Path.GetFullPath(baseFilePath);
+				string fullPath = SystemInfo.ConvertToFullPath(baseFilePath);
 
 				directory = Path.GetDirectoryName(fullPath);
 				if (Directory.Exists(directory))
